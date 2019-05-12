@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>CotG City Optimizer | By Star</title>
+	<link rel="icon" href="images/icons/cabin.png">
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+	<div ID = "maintooltip"></div>
+
+	<div ID = "errorwindow">
+		<div ID = "actualerrorwindow">
+			<div class = "impexptop">
+				<div ID = "errorwindowclose"></div>
+				<br style="clear:both">
+			</div>
+			<p ID = "errormessage"></p>
+		</div>
+	</div>
+
+	<div ID = "importexportwindow">
+		<div ID = "actualimpexpwindow">
+			<div class = "impexptop">
+				<div ID = "impexpclose"></div>
+				<br style="clear:both">
+			</div>
+
+			<p class = "impexp1p">If you're importing sharestrings that were made in cotgopt / louopt, you'll need to click the LoU Sharestring tab below, and import them to there.</p>
+			<p class = "impexp2p">(Because cotgopt / louopt used the LoU hotkeys in the sharestrings and urls, and I don't :D )</p>
+
+			<div class = "flex">
+				<button ID = "cotgsharestringb" class ="bluebuttons">CotG ShareString</button>
+				<button ID = "lousharestringb" class ="bluebuttons">LoU ShareString</button>
+			</div>
+
+			<div class = "textareacontain">
+				<textarea ID = "sharestringinputcotg" onfocus="this.select();"></textarea>
+				<textarea ID = "sharestringinputlou" onfocus="this.select();" placeholder="Enter cotgopt / louopt Sharestring here"></textarea>
+			</div>
+			<div class = "loadbuttoncontain">
+				<button ID = "loadcotgstringbutton" class = "bluebuttons">Load</button>
+				<button ID = "loadloustringbutton" class = "bluebuttons">Load</button>
+			</div>
+
+			<p class = "impexp3p">Direct links to this map:</p>
+
+			<div class = "flex">
+				<div class = "inputnameie">Short Link:</div>
+				<input type="text" ID = "inpexpshortlink" class = "inputie" onfocus="this.select();">
+			</div>
+			<div class = "flex">
+				<div class = "inputnameie">Long Link:</div>
+				<input type="text" ID = "inpexplonglink" class = "inputie" onfocus="this.select();">
+			</div>
+		</div>
+	</div>
+
+	<div class = "topbar">
+		<button ID = "newmap" class = "leftbutton bluebuttons">New</button>
+		<button ID = "resetmap" class = "leftbutton bluebuttons">Reset</button>
+		<button ID = "importmap" class = "leftbutton bluebuttons">Import/Export</button>
+
+		<button ID = "landmap" class = "rightbutton bluebuttons">Land</button>
+		<button ID = "watermap" class = "rightbutton bluebuttons">Water</button>
+		<br>
+	</div>
+
+	<div class = "maincityholder">
+		
+		<div ID = "sidepanel">
+
+			<div ID = "selectabuildingmenu">
+				<table>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>
+							<button ID = "xbselmenu">
+								<div></div>
+							</button>
+						</td>
+					</tr>
+					<tr>
+						<td class = "b tooltipcl" data-tooltip="Forest Node">
+							<div ID = "forest" class = "smallbuilding"></div>
+							<p>1</p>
+						</td>
+						<td class = "b tooltipcl" data-tooltip="Stone Node">
+							<div ID = "stone" class = "smallbuilding"></div>
+							<p>2</p>
+						</td>
+						<td  class = "b tooltipcl" data-tooltip="Iron Node">
+							<div ID = "iron" class = "smallbuilding"></div>
+							<p>3</p>
+						</td>
+						<td  class = "b tooltipcl" data-tooltip="Lake Node">
+							<div ID = "lake" class = "smallbuilding"></div>
+							<p>4</p>
+						</td>
+						<td class = "b tooltipcl" data-tooltip="Port">
+							<div ID = "port" class = "smallbuilding"></div>
+							<p>o</p>
+						</td>
+					</tr>
+					<tr>
+						<td class = "b tooltipcl" data-tooltip="Forester's Hut">
+							<div ID = "foresters" class = "smallbuilding"></div>
+							<p>f</p>
+						</td>
+						<td class = "b tooltipcl" data-tooltip="Stone Mine">
+							<div ID = "stonemine" class = "smallbuilding"></div>
+							<p>s</p>
+						</td>
+						<td class = "b tooltipcl" data-tooltip="Iron Mine">
+							<div ID = "ironmine" class = "smallbuilding"></div>
+							<p>i</p>
+						</td>
+						<td  class = "b tooltipcl" data-tooltip="Farm">
+							<div ID = "farm" class = "smallbuilding"></div>
+							<p>a</p>
+						</td>
+						<td class = "b tooltipcl" data-tooltip="Villa">
+							<div ID = "villa" class = "smallbuilding"></div>
+							<p>v</p>
+						</td>
+					</tr>
+					<tr>
+						<td class = "b tooltipcl" data-tooltip="Sawmill">
+							<div ID = "sawmill" class = "smallbuilding"></div>
+							<p>l</p>
+						</td>
+						<td class = "b tooltipcl" data-tooltip="Mason's Hut">
+							<div ID = "masons" class = "smallbuilding"></div>
+							<p>h</p>
+						</td>
+						<td class = "b tooltipcl" data-tooltip="Smelter">
+							<div ID = "smelter" class = "smallbuilding"></div>
+							<p>z</p>
+						</td>
+						<td class = "b tooltipcl" data-tooltip="Grain Mill">
+							<div ID = "grainmill" class = "smallbuilding"></div>
+							<p>g</p>
+						</td>
+						<td class = "b tooltipcl" data-tooltip="Forum">
+							<div ID = "forum" class = "smallbuilding"></div>
+							<p>m</p>
+						</td>
+					</tr>
+					<tr>
+						<td colspan = "5">
+							<div class = "breaker"></div>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td class = "b tooltipcl" data-tooltip="Storehouse">
+							<div ID = "storehouse" class = "smallbuilding"></div>
+							<p>r</p>
+						</td>
+						<td  class = "b tooltipcl" data-tooltip="Hideaway">
+							<div ID = "hide" class = "smallbuilding"></div>
+							<p>q</p>
+						</td>
+						<td class = "b tooltipcl" data-tooltip="Cabin">
+							<div ID = "cabin" class = "smallbuilding"></div>
+							<p>c</p>
+						</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td colspan = "5">
+							<div class = "breaker"></div>
+						</td>
+					</tr>
+					<tr>
+						<td class = "b tooltipcl" data-tooltip="Barracks">
+							<div ID = "barracks" class = "smallbuilding"></div>
+							<p>b</p>
+						</td>
+						<td class = "b tooltipcl" data-tooltip="Guardhouse">
+							<div ID = "guardhouse" class = "smallbuilding"></div>
+							<p>u</p>
+						</td>
+						<td class = "b tooltipcl" data-tooltip="Training Arena">
+							<div ID = "arena" class = "smallbuilding"></div>
+							<p>t</p>
+						</td>
+						<td class = "b tooltipcl" data-tooltip="Academy">
+							<div ID = "academy" class = "smallbuilding"></div>
+							<p>y</p>
+						</td>
+						<td class = "b tooltipcl" data-tooltip="Castle">
+							<div ID = "castle" class = "smallbuilding"></div>
+							<p>x</p>
+						</td>
+					</tr>
+					<tr>
+						<td class = "b tooltipcl" data-tooltip="Shipyard">
+							<div ID = "shipyard" class = "smallbuilding"></div>
+							<p>p</p>
+						</td>
+						<td class = "b tooltipcl" data-tooltip="Stable">
+							<div ID = "stable" class = "smallbuilding"></div>
+							<p>e</p>
+						</td>
+						<td class = "b tooltipcl" data-tooltip="Blacksmith">
+							<div ID = "blacksmith" class = "smallbuilding"></div>
+							<p>k</p>
+						</td>
+						<td  class = "b tooltipcl" data-tooltip="Sorcerer's Tower">
+							<div ID = "sorctower" class = "smallbuilding"></div>
+							<p>w</p>
+						</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td colspan = "5">
+							<div class = "breaker"></div>
+						</td>
+					</tr>
+				</table>
+
+				<table class = "secondbuildtable">
+					<tr>
+						<td>
+							<div ID = "lock" class = "builicon tooltipcl" data-tooltip="Lock / Unlock Spot"></div>
+						</td>
+						<td>
+							<div ID = "redxicon" class = "builicon tooltipcl" data-tooltip="Remove Tile"></div>
+						</td>
+						<td>
+							<div ID = "star" class = "builicon tooltipcl" data-tooltip="Place Optimal Building"></div>
+						</td>
+					</tr>
+					<tr>
+						<td class = "sbtpr">&lt;space&gt;</td>
+						<td class = "sbtpr">0, &lt;delete&gt;,<br>&lt;backspace&gt;</td>
+						<td class = "sbtpr">&lt;enter&gt;</td>
+					</tr>
+				</table>
+			</div>
+
+			<div ID = "spothovermenu">
+				
+				
+			</div>
+
+		</div>
+
+		<div ID = "cityholder" class = "landlocked">
+			<table>
+				<tr>
+					<td><div ID = "b1-1"></div></td>
+					<td><div ID = "b1-2"></div></td>
+					<td><div ID = "b1-3"></div></td>
+					<td><div ID = "b1-4"></div></td>
+					<td><div ID = "b1-5"></div></td>
+					<td><div ID = "b1-6"></div></td>
+					<td><div ID = "b1-7"></div></td>
+					<td><div ID = "b1-8"></div></td>
+					<td><div ID = "b1-9"></div></td>
+					<td><div ID = "b1-10"></div></td>
+					<td><div ID = "b1-11"></div></td>
+					<td><div ID = "b1-12"></div></td>
+					<td><div ID = "b1-13"></div></td>
+					<td><div ID = "b1-14"></div></td>
+					<td><div ID = "b1-15"></div></td>
+					<td><div ID = "b1-16"></div></td>
+					<td><div ID = "b1-17"></div></td>
+					<td><div ID = "b1-18"></div></td>
+					<td><div ID = "b1-19"></div></td>
+					<td><div ID = "b1-20"></div></td>
+					<td><div ID = "b1-21"></div></td>
+				</tr>
+				<tr>
+					<td><div ID = "b2-1"></div></td>
+					<td><div ID = "b2-2"></div></td>
+					<td><div ID = "b2-3"></div></td>
+					<td class = "wa la"><div ID = "b2-4"></div></td>
+					<td class = "wa la"><div ID = "b2-5"></div></td>
+					<td class = "wa la"><div ID = "b2-6"></div></td>
+					<td class = "wa la"><div ID = "b2-7"></div></td>
+					<td class = "wa la"><div ID = "b2-8"></div></td>
+					<td class = "wa la"><div ID = "b2-9"></div></td>
+					<td class = "wa la"><div ID = "b2-10"></div></td>
+					<td><div ID = "b2-11"></div></td>
+					<td class = "wa la"><div ID = "b2-12"></div></td>
+					<td class = "wa la"><div ID = "b2-13"></div></td>
+					<td class = "wa la"><div ID = "b2-14"></div></td>
+					<td class = "wa la"><div ID = "b2-15"></div></td>
+					<td class = "wa la"><div ID = "b2-16"></div></td>
+					<td class = "wa la"><div ID = "b2-17"></div></td>
+					<td class = "wa la"><div ID = "b2-18"></div></td>
+					<td><div ID = "b2-19"></div></td>
+					<td><div ID = "b2-20"></div></td>
+					<td><div ID = "b2-21"></div></td>
+				</tr>
+				<tr>
+					<td><div ID = "b3-1"></div></td>
+					<td><div ID = "b3-2"></div></td>
+					<td class = "wa la"><div ID = "b3-3"></div></td>
+					<td class = "wa la"><div ID = "b3-4"></div></td>
+					<td class = "wa la"><div ID = "b3-5"></div></td>
+					<td class = "wa la"><div ID = "b3-6"></div></td>
+					<td class = "wa la"><div ID = "b3-7"></div></td>
+					<td class = "wa la"><div ID = "b3-8"></div></td>
+					<td class = "wa la"><div ID = "b3-9"></div></td>
+					<td class = "wa la"><div ID = "b3-10"></div></td>
+					<td><div ID = "b3-11"></div></td>
+					<td class = "wa la"><div ID = "b3-12"></div></td>
+					<td class = "wa la"><div ID = "b3-13"></div></td>
+					<td class = "wa la"><div ID = "b3-14"></div></td>
+					<td class = "wa la"><div ID = "b3-15"></div></td>
+					<td class = "wa la"><div ID = "b3-16"></div></td>
+					<td class = "wa la"><div ID = "b3-17"></div></td>
+					<td class = "wa la"><div ID = "b3-18"></div></td>
+					<td class = "wa la"><div ID = "b3-19"></div></td>
+					<td><div ID = "b3-20"></div></td>
+					<td><div ID = "b3-21"></div></td>
+				</tr>
+				<tr>
+					<td><div ID = "b4-1"></div></td>
+					<td class = "wa la"><div ID = "b4-2"></div></td>
+					<td class = "wa la"><div ID = "b4-3"></div></td>
+					<td class = "wa la"><div ID = "b4-4"></div></td>
+					<td class = "wa la"><div ID = "b4-5"></div></td>
+					<td class = "wa la"><div ID = "b4-6"></div></td>
+					<td class = "wa la"><div ID = "b4-7"></div></td>
+					<td class = "wa la"><div ID = "b4-8"></div></td>
+					<td class = "wa la"><div ID = "b4-9"></div></td>
+					<td class = "wa la"><div ID = "b4-10"></div></td>
+					<td><div ID = "b4-11"></div></td>
+					<td class = "wa la"><div ID = "b4-12"></div></td>
+					<td class = "wa la"><div ID = "b4-13"></div></td>
+					<td class = "wa la"><div ID = "b4-14"></div></td>
+					<td class = "wa la"><div ID = "b4-15"></div></td>
+					<td class = "wa la"><div ID = "b4-16"></div></td>
+					<td class = "wa la"><div ID = "b4-17"></div></td>
+					<td class = "wa la"><div ID = "b4-18"></div></td>
+					<td class = "wa la"><div ID = "b4-19"></div></td>
+					<td class = "wa la"><div ID = "b4-20"></div></td>
+					<td><div ID = "b4-21"></div></td>
+				</tr>
+				<tr>
+					<td><div ID = "b5-1"></div></td>
+					<td class = "wa la"><div ID = "b5-2"></div></td>
+					<td class = "wa la"><div ID = "b5-3"></div></td>
+					<td class = "wa la"><div ID = "b5-4"></div></td>
+					<td class = "wa la"><div ID = "b5-5"></div></td>
+					<td class = "wa la"><div ID = "b5-6"></div></td>
+					<td class = "wa la"><div ID = "b5-7"></div></td>
+					<td class = "wa la"><div ID = "b5-8"></div></td>
+					<td class = "wa la"><div ID = "b5-9"></div></td>
+					<td class = "wa la"><div ID = "b5-10"></div></td>
+					<td><div ID = "b5-11"></div></td>
+					<td class = "wa la"><div ID = "b5-12"></div></td>
+					<td class = "wa la"><div ID = "b5-13"></div></td>
+					<td class = "wa la"><div ID = "b5-14"></div></td>
+					<td class = "wa la"><div ID = "b5-15"></div></td>
+					<td class = "wa la"><div ID = "b5-16"></div></td>
+					<td class = "wa la"><div ID = "b5-17"></div></td>
+					<td class = "wa la"><div ID = "b5-18"></div></td>
+					<td class = "wa la"><div ID = "b5-19"></div></td>
+					<td class = "wa la"><div ID = "b5-20"></div></td>
+					<td><div ID = "b5-21"></div></td>
+				</tr>
+				<tr>
+					<td><div ID = "b6-1"></div></td>
+					<td class = "wa la"><div ID = "b6-2"></div></td>
+					<td class = "wa la"><div ID = "b6-3"></div></td>
+					<td class = "wa la"><div ID = "b6-4"></div></td>
+					<td class = "wa la"><div ID = "b6-5"></div></td>
+					<td class = "wa la"><div ID = "b6-6"></div></td>
+					<td class = "wa la"><div ID = "b6-7"></div></td>
+					<td><div ID = "b6-8"></div></td>
+					<td><div ID = "b6-9"></div></td>
+					<td><div ID = "b6-10"></div></td>
+					<td><div ID = "b6-11"></div></td>
+					<td><div ID = "b6-12"></div></td>
+					<td><div ID = "b6-13"></div></td>
+					<td><div ID = "b6-14"></div></td>
+					<td class = "wa la"><div ID = "b6-15"></div></td>
+					<td class = "wa la"><div ID = "b6-16"></div></td>
+					<td class = "wa la"><div ID = "b6-17"></div></td>
+					<td class = "wa la"><div ID = "b6-18"></div></td>
+					<td class = "wa la"><div ID = "b6-19"></div></td>
+					<td class = "wa la"><div ID = "b6-20"></div></td>
+					<td><div ID = "b6-21"></div></td>
+				</tr>
+				<tr>
+					<td><div ID = "b7-1"></div></td>
+					<td class = "wa la"><div ID = "b7-2"></div></td>
+					<td class = "wa la"><div ID = "b7-3"></div></td>
+					<td class = "wa la"><div ID = "b7-4"></div></td>
+					<td class = "wa la"><div ID = "b7-5"></div></td>
+					<td class = "wa la"><div ID = "b7-6"></div></td>
+					<td><div ID = "b7-7"></div></td>
+					<td><div ID = "b7-8"></div></td>
+					<td class = "wa la"><div ID = "b7-9"></div></td>
+					<td class = "wa la"><div ID = "b7-10"></div></td>
+					<td class = "wa la"><div ID = "b7-11"></div></td>
+					<td class = "wa la"><div ID = "b7-12"></div></td>
+					<td class = "wa la"><div ID = "b7-13"></div></td>
+					<td><div ID = "b7-14"></div></td>
+					<td><div ID = "b7-15"></div></td>
+					<td class = "wa la"><div ID = "b7-16"></div></td>
+					<td class = "wa la"><div ID = "b7-17"></div></td>
+					<td class = "wa la"><div ID = "b7-18"></div></td>
+					<td class = "wa la"><div ID = "b7-19"></div></td>
+					<td class = "wa la"><div ID = "b7-20"></div></td>
+					<td><div ID = "b7-21"></div></td>
+				</tr>
+				<tr>
+					<td><div ID = "b8-1"></div></td>
+					<td class = "wa la"><div ID = "b8-2"></div></td>
+					<td class = "wa la"><div ID = "b8-3"></div></td>
+					<td class = "wa la"><div ID = "b8-4"></div></td>
+					<td class = "wa la"><div ID = "b8-5"></div></td>
+					<td><div ID = "b8-6"></div></td>
+					<td><div ID = "b8-7"></div></td>
+					<td class = "wa la"><div ID = "b8-8"></div></td>
+					<td class = "wa la"><div ID = "b8-9"></div></td>
+					<td class = "wa la"><div ID = "b8-10"></div></td>
+					<td class = "wa la"><div ID = "b8-11"></div></td>
+					<td class = "wa la"><div ID = "b8-12"></div></td>
+					<td class = "wa la"><div ID = "b8-13"></div></td>
+					<td class = "wa la"><div ID = "b8-14"></div></td>
+					<td><div ID = "b8-15"></div></td>
+					<td><div ID = "b8-16"></div></td>
+					<td class = "wa la"><div ID = "b8-17"></div></td>
+					<td class = "wa la"><div ID = "b8-18"></div></td>
+					<td class = "wa la"><div ID = "b8-19"></div></td>
+					<td class = "wa la"><div ID = "b8-20"></div></td>
+					<td><div ID = "b8-21"></div></td>
+				</tr>
+				<tr>
+					<td><div ID = "b9-1"></div></td>
+					<td class = "wa la"><div ID = "b9-2"></div></td>
+					<td class = "wa la"><div ID = "b9-3"></div></td>
+					<td class = "wa la"><div ID = "b9-4"></div></td>
+					<td class = "wa la"><div ID = "b9-5"></div></td>
+					<td><div ID = "b9-6"></div></td>
+					<td class = "wa la"><div ID = "b9-7"></div></td>
+					<td class = "wa la"><div ID = "b9-8"></div></td>
+					<td class = "wa la"><div ID = "b9-9"></div></td>
+					<td class = "wa la"><div ID = "b9-10"></div></td>
+					<td class = "wa la"><div ID = "b9-11"></div></td>
+					<td class = "wa la"><div ID = "b9-12"></div></td>
+					<td class = "wa la"><div ID = "b9-13"></div></td>
+					<td class = "wa la"><div ID = "b9-14"></div></td>
+					<td class = "wa la"><div ID = "b9-15"></div></td>
+					<td><div ID = "b9-16"></div></td>
+					<td class = "wa la"><div ID = "b9-17"></div></td>
+					<td class = "wa la"><div ID = "b9-18"></div></td>
+					<td class = "wa la"><div ID = "b9-19"></div></td>
+					<td class = "wa la"><div ID = "b9-20"></div></td>
+					<td><div ID = "b9-21"></div></td>
+				</tr>
+				<tr>
+					<td><div ID = "b10-1"></div></td>
+					<td class = "wa la"><div ID = "b10-2"></div></td>
+					<td class = "wa la"><div ID = "b10-3"></div></td>
+					<td class = "wa la"><div ID = "b10-4"></div></td>
+					<td class = "wa la"><div ID = "b10-5"></div></td>
+					<td><div ID = "b10-6"></div></td>
+					<td class = "wa la"><div ID = "b10-7"></div></td>
+					<td class = "wa la"><div ID = "b10-8"></div></td>
+					<td class = "wa la"><div ID = "b10-9"></div></td>
+					<td class = "wa la"><div ID = "b10-10"></div></td>
+					<td class = "wa la"><div ID = "b10-11"></div></td>
+					<td class = "wa la"><div ID = "b10-12"></div></td>
+					<td class = "wa la"><div ID = "b10-13"></div></td>
+					<td class = "wa la"><div ID = "b10-14"></div></td>
+					<td class = "wa la"><div ID = "b10-15"></div></td>
+					<td><div ID = "b10-16"></div></td>
+					<td class = "wa la"><div ID = "b10-17"></div></td>
+					<td class = "wa la"><div ID = "b10-18"></div></td>
+					<td class = "wa la"><div ID = "b10-19"></div></td>
+					<td class = "wa la"><div ID = "b10-20"></div></td>
+					<td><div ID = "b10-21"></div></td>
+				</tr>
+				<tr>
+					<td><div ID = "b11-1"></div></td>
+					<td><div ID = "b11-2"></div></td>
+					<td><div ID = "b11-3"></div></td>
+					<td><div ID = "b11-4"></div></td>
+					<td><div ID = "b11-5"></div></td>
+					<td><div ID = "b11-6"></div></td>
+					<td class = "wa la"><div ID = "b11-7"></div></td>
+					<td class = "wa la"><div ID = "b11-8"></div></td>
+					<td class = "wa la"><div ID = "b11-9"></div></td>
+					<td class = "wa la"><div ID = "b11-10"></div></td>
+					<td><div ID = "b11-11"></div></td>
+					<td class = "wa la"><div ID = "b11-12"></div></td>
+					<td class = "wa la"><div ID = "b11-13"></div></td>
+					<td class = "wa la"><div ID = "b11-14"></div></td>
+					<td class = "wa la"><div ID = "b11-15"></div></td>
+					<td><div ID = "b11-16"></div></td>
+					<td><div ID = "b11-17"></div></td>
+					<td><div ID = "b11-18"></div></td>
+					<td><div ID = "b11-19"></div></td>
+					<td><div ID = "b11-20"></div></td>
+					<td><div ID = "b11-21"></div></td>
+				</tr>
+				<tr>
+					<td><div ID = "b12-1"></div></td>
+					<td class = "wa la"><div ID = "b12-2"></div></td>
+					<td class = "wa la"><div ID = "b12-3"></div></td>
+					<td class = "wa la"><div ID = "b12-4"></div></td>
+					<td class = "wa la"><div ID = "b12-5"></div></td>
+					<td><div ID = "b12-6"></div></td>
+					<td class = "wa la"><div ID = "b12-7"></div></td>
+					<td class = "wa la"><div ID = "b12-8"></div></td>
+					<td class = "wa la"><div ID = "b12-9"></div></td>
+					<td class = "wa la"><div ID = "b12-10"></div></td>
+					<td class = "wa la"><div ID = "b12-11"></div></td>
+					<td class = "wa la"><div ID = "b12-12"></div></td>
+					<td class = "wa la"><div ID = "b12-13"></div></td>
+					<td class = "wa la"><div ID = "b12-14"></div></td>
+					<td class = "wa la"><div ID = "b12-15"></div></td>
+					<td><div ID = "b12-16"></div></td>
+					<td class = "wa la"><div ID = "b12-17"></div></td>
+					<td class = "wa la"><div ID = "b12-18"></div></td>
+					<td class = "wa la"><div ID = "b12-19"></div></td>
+					<td class = "wa la"><div ID = "b12-20"></div></td>
+					<td><div ID = "b12-21"></div></td>
+				</tr>
+				<tr>
+					<td><div ID = "b13-1"></div></td>
+					<td class = "wa la"><div ID = "b13-2"></div></td>
+					<td class = "wa la"><div ID = "b13-3"></div></td>
+					<td class = "wa la"><div ID = "b13-4"></div></td>
+					<td class = "wa la"><div ID = "b13-5"></div></td>
+					<td><div ID = "b13-6"></div></td>
+					<td class = "wa la"><div ID = "b13-7"></div></td>
+					<td class = "wa la"><div ID = "b13-8"></div></td>
+					<td class = "wa la"><div ID = "b13-9"></div></td>
+					<td class = "wa la"><div ID = "b13-10"></div></td>
+					<td class = "wa la"><div ID = "b13-11"></div></td>
+					<td class = "wa la"><div ID = "b13-12"></div></td>
+					<td class = "wa la"><div ID = "b13-13"></div></td>
+					<td class = "wa la"><div ID = "b13-14"></div></td>
+					<td class = "wa la"><div ID = "b13-15"></div></td>
+					<td><div ID = "b13-16"></div></td>
+					<td class = "wa la"><div ID = "b13-17"></div></td>
+					<td class = "wa la"><div ID = "b13-18"></div></td>
+					<td class = "wa la"><div ID = "b13-19"></div></td>
+					<td class = "wa la"><div ID = "b13-20"></div></td>
+					<td><div ID = "b13-21"></div></td>
+				</tr>
+				<tr>
+					<td><div ID = "b14-1"></div></td>
+					<td class = "wa la"><div ID = "b14-2"></div></td>
+					<td class = "wa la"><div ID = "b14-3"></div></td>
+					<td class = "wa la"><div ID = "b14-4"></div></td>
+					<td class = "wa la"><div ID = "b14-5"></div></td>
+					<td><div ID = "b14-6"></div></td>
+					<td><div ID = "b14-7"></div></td>
+					<td class = "wa la"><div ID = "b14-8"></div></td>
+					<td class = "wa la"><div ID = "b14-9"></div></td>
+					<td class = "wa la"><div ID = "b14-10"></div></td>
+					<td class = "wa la"><div ID = "b14-11"></div></td>
+					<td class = "wa la"><div ID = "b14-12"></div></td>
+					<td class = "wa la"><div ID = "b14-13"></div></td>
+					<td class = "wa la"><div ID = "b14-14"></div></td>
+					<td><div ID = "b14-15"></div></td>
+					<td><div ID = "b14-16"></div></td>
+					<td class = "wa la"><div ID = "b14-17"></div></td>
+					<td class = "wa la"><div ID = "b14-18"></div></td>
+					<td class = "wa la"><div ID = "b14-19"></div></td>
+					<td class = "wa la"><div ID = "b14-20"></div></td>
+					<td><div ID = "b14-21"></div></td>
+				</tr>
+				<tr>
+					<td><div ID = "b15-1"></div></td>
+					<td class = "wa la"><div ID = "b15-2"></div></td>
+					<td class = "wa la"><div ID = "b15-3"></div></td>
+					<td class = "wa la"><div ID = "b15-4"></div></td>
+					<td class = "wa la"><div ID = "b15-5"></div></td>
+					<td class = "wa la"><div ID = "b15-6"></div></td>
+					<td><div ID = "b15-7"></div></td>
+					<td><div ID = "b15-8"></div></td>
+					<td class = "wa la"><div ID = "b15-9"></div></td>
+					<td class = "wa la"><div ID = "b15-10"></div></td>
+					<td class = "wa la"><div ID = "b15-11"></div></td>
+					<td class = "wa la"><div ID = "b15-12"></div></td>
+					<td class = "wa la"><div ID = "b15-13"></div></td>
+					<td><div ID = "b15-14"></div></td>
+					<td><div ID = "b15-15"></div></td>
+					<td class = "wa la"><div ID = "b15-16"></div></td>
+					<td class = "wa la"><div ID = "b15-17"></div></td>
+					<td class = "wa la"><div ID = "b15-18"></div></td>
+					<td class = "wa la"><div ID = "b15-19"></div></td>
+					<td class = "wa la"><div ID = "b15-20"></div></td>
+					<td><div ID = "b15-21"></div></td>
+				</tr>
+				<tr>
+					<td><div ID = "b16-1"></div></td>
+					<td class = "wa la"><div ID = "b16-2"></div></td>
+					<td class = "wa la"><div ID = "b16-3"></div></td>
+					<td class = "wa la"><div ID = "b16-4"></div></td>
+					<td class = "wa la"><div ID = "b16-5"></div></td>
+					<td class = "wa la"><div ID = "b16-6"></div></td>
+					<td class = "wa la"><div ID = "b16-7"></div></td>
+					<td><div ID = "b16-8"></div></td>
+					<td><div ID = "b16-9"></div></td>
+					<td><div ID = "b16-10"></div></td>
+					<td><div ID = "b16-11"></div></td>
+					<td><div ID = "b16-12"></div></td>
+					<td><div ID = "b16-13"></div></td>
+					<td><div ID = "b16-14"></div></td>
+					<td class = "wa la"><div ID = "b16-15"></div></td>
+					<td class = "wa la"><div ID = "b16-16"></div></td>
+					<td class = "wa la ws"><div ID = "b16-17"></div></td>
+					<td class = "wa la ws"><div ID = "b16-18"></div></td>
+					<td class = "wa la"><div ID = "b16-19"></div></td>
+					<td class = "wa la"><div ID = "b16-20"></div></td>
+					<td><div ID = "b16-21"></div></td>
+				</tr>
+				<tr>
+					<td><div ID = "b17-1"></div></td>
+					<td class = "wa la"><div ID = "b17-2"></div></td>
+					<td class = "wa la"><div ID = "b17-3"></div></td>
+					<td class = "wa la"><div ID = "b17-4"></div></td>
+					<td class = "wa la"><div ID = "b17-5"></div></td>
+					<td class = "wa la"><div ID = "b17-6"></div></td>
+					<td class = "wa la"><div ID = "b17-7"></div></td>
+					<td class = "wa la"><div ID = "b17-8"></div></td>
+					<td class = "wa la"><div ID = "b17-9"></div></td>
+					<td class = "wa la"><div ID = "b17-10"></div></td>
+					<td><div ID = "b17-11"></div></td>
+					<td class = "wa la"><div ID = "b17-12"></div></td>
+					<td class = "wa la"><div ID = "b17-13"></div></td>
+					<td class = "wa la"><div ID = "b17-14"></div></td>
+					<td class = "wa la"><div ID = "b17-15"></div></td>
+					<td class = "wa la ws"><div ID = "b17-16"></div></td>
+					<td class = "la"><div ID = "b17-17"></div></td>
+					<td class = "la"><div ID = "b17-18"></div></td>
+					<td class = "wa la ws"><div ID = "b17-19"></div></td>
+					<td class = "wa la"><div ID = "b17-20"></div></td>
+					<td><div ID = "b17-21"></div></td>
+				</tr>
+				<tr>
+					<td><div ID = "b18-1"></div></td>
+					<td class = "wa la"><div ID = "b18-2"></div></td>
+					<td class = "wa la"><div ID = "b18-3"></div></td>
+					<td class = "wa la"><div ID = "b18-4"></div></td>
+					<td class = "wa la"><div ID = "b18-5"></div></td>
+					<td class = "wa la"><div ID = "b18-6"></div></td>
+					<td class = "wa la"><div ID = "b18-7"></div></td>
+					<td class = "wa la"><div ID = "b18-8"></div></td>
+					<td class = "wa la"><div ID = "b18-9"></div></td>
+					<td class = "wa la"><div ID = "b18-10"></div></td>
+					<td><div ID = "b18-11"></div></td>
+					<td class = "wa la"><div ID = "b18-12"></div></td>
+					<td class = "wa la"><div ID = "b18-13"></div></td>
+					<td class = "wa la"><div ID = "b18-14"></div></td>
+					<td class = "wa la"><div ID = "b18-15"></div></td>
+					<td class = "wa la ws"><div ID = "b18-16"></div></td>
+					<td class = "la"><div ID = "b18-17"></div></td>
+					<td class = "la"><div ID = "b18-18"></div></td>
+					<td class = "la"><div ID = "b18-19"></div></td>
+					<td class = "wa la ws"><div ID = "b18-20"></div></td>
+					<td><div ID = "b18-21"></div></td>
+				</tr>
+				<tr>
+					<td><div ID = "b19-1"></div></td>
+					<td><div ID = "b19-2"></div></td>
+					<td class = "wa la"><div ID = "b19-3"></div></td>
+					<td class = "wa la"><div ID = "b19-4"></div></td>
+					<td class = "wa la"><div ID = "b19-5"></div></td>
+					<td class = "wa la"><div ID = "b19-6"></div></td>
+					<td class = "wa la"><div ID = "b19-7"></div></td>
+					<td class = "wa la"><div ID = "b19-8"></div></td>
+					<td class = "wa la"><div ID = "b19-9"></div></td>
+					<td class = "wa la"><div ID = "b19-10"></div></td>
+					<td><div ID = "b19-11"></div></td>
+					<td class = "wa la"><div ID = "b19-12"></div></td>
+					<td class = "wa la"><div ID = "b19-13"></div></td>
+					<td class = "wa la"><div ID = "b19-14"></div></td>
+					<td class = "wa la"><div ID = "b19-15"></div></td>
+					<td class = "wa la"><div ID = "b19-16"></div></td>
+					<td class = "wa la ws"><div ID = "b19-17"></div></td>
+					<td class = "la"><div ID = "b19-18"></div></td>
+					<td class = "la"><div ID = "b19-19"></div></td>
+					<td><div ID = "b19-20"></div></td>
+					<td><div ID = "b19-21"></div></td>
+				</tr>
+				<tr>
+					<td><div ID = "b20-1"></div></td>
+					<td><div ID = "b20-2"></div></td>
+					<td><div ID = "b20-3"></div></td>
+					<td class = "wa la"><div ID = "b20-4"></div></td>
+					<td class = "wa la"><div ID = "b20-5"></div></td>
+					<td class = "wa la"><div ID = "b20-6"></div></td>
+					<td class = "wa la"><div ID = "b20-7"></div></td>
+					<td class = "wa la"><div ID = "b20-8"></div></td>
+					<td class = "wa la"><div ID = "b20-9"></div></td>
+					<td class = "wa la"><div ID = "b20-10"></div></td>
+					<td><div ID = "b20-11"></div></td>
+					<td class = "wa la"><div ID = "b20-12"></div></td>
+					<td class = "wa la"><div ID = "b20-13"></div></td>
+					<td class = "wa la"><div ID = "b20-14"></div></td>
+					<td class = "wa la"><div ID = "b20-15"></div></td>
+					<td class = "wa la"><div ID = "b20-16"></div></td>
+					<td class = "wa la"><div ID = "b20-17"></div></td>
+					<td class = "wa la ws"><div ID = "b20-18"></div></td>
+					<td><div ID = "b20-19"></div></td>
+					<td><div ID = "b20-20"></div></td>
+					<td><div ID = "b20-21"></div></td>
+				</tr>
+				<tr>
+					<td><div ID = "b21-1"></div></td>
+					<td><div ID = "b21-2"></div></td>
+					<td><div ID = "b21-3"></div></td>
+					<td><div ID = "b21-4"></div></td>
+					<td><div ID = "b21-5"></div></td>
+					<td><div ID = "b21-6"></div></td>
+					<td><div ID = "b21-7"></div></td>
+					<td><div ID = "b21-8"></div></td>
+					<td><div ID = "b21-9"></div></td>
+					<td><div ID = "b21-10"></div></td>
+					<td><div ID = "b21-11"></div></td>
+					<td><div ID = "b21-12"></div></td>
+					<td><div ID = "b21-13"></div></td>
+					<td><div ID = "b21-14"></div></td>
+					<td><div ID = "b21-15"></div></td>
+					<td><div ID = "b21-16"></div></td>
+					<td><div ID = "b21-17"></div></td>
+					<td><div ID = "b21-18"></div></td>
+					<td><div ID = "b21-19"></div></td>
+					<td><div ID = "b21-20"></div></td>
+					<td><div ID = "b21-21"></div></td>
+				</tr>
+			</table>
+		</div>
+
+	</div>
+
+	<div class = "underneathmenu">
+		<button ID = "resourcetabbutton" class = "tpb bttbluebuttons">Resources</button>
+		<button ID = "militarytabbutton" class = "tpb bttbluebuttons">Military</button>
+		<br>
+		<div ID = "restab">
+			<table class = "leftunderneathrestable">
+				<tr>
+					<th></th>
+					<th>Production</th>
+					<th>Storage</th>
+					<th>Protected</th>
+					<th colspan="2">Add/Remove Building</th>
+				</tr>
+				<tr>
+					<td>Wood</td>
+					<td ID = "woodproductiontd"></td>
+					<td ID = "woodstoragetd"></td>
+					<td ID = "woodprotectedtd"></td>
+					<td class = "btt">
+						<button ID = "woodminus" class = "mid bttbluebuttons">-</button>
+					</td>
+					<td class = "btt">
+						<button ID = "woodplus" class = "mid bttbluebuttons">+</button>
+					</td>
+				</tr>
+				<tr>
+					<td>Stone</td>
+					<td ID = "stoneproductiontd"></td>
+					<td ID = "stonestoragetd"></td>
+					<td ID = "stoneprotectedtd"></td>
+					<td class = "btt">
+						<button ID = "stoneminus" class = "mid bttbluebuttons">-</button>
+					</td>
+					<td class = "btt">
+						<button ID = "stoneplus" class = "mid bttbluebuttons">+</button>
+					</td>
+				</tr>
+				<tr>
+					<td>Iron</td>
+					<td ID = "ironproductiontd"></td>
+					<td ID = "ironstoragetd"></td>
+					<td ID = "ironprotectedtd"></td>
+					<td class = "btt">
+						<button ID = "ironminus" class = "mid bttbluebuttons">-</button>
+					</td>
+					<td class = "btt">
+						<button ID = "ironplus" class = "mid bttbluebuttons">+</button>
+					</td>
+				</tr>
+				<tr>
+					<td>Food</td>
+					<td ID = "foodproductiontd"></td>
+					<td ID = "foodstoragetd"></td>
+					<td ID = "foodprotectedtd"></td>
+					<td class = "btt">
+						<button ID = "foodminus" class = "mid bttbluebuttons">-</button>
+					</td>
+					<td class = "btt">
+						<button ID = "foodplus" class = "mid bttbluebuttons">+</button>
+					</td>
+				</tr>
+				<tr>
+					<td>Gold</td>
+					<td ID = "goldproductiontd"></td>
+					<td>-</td>
+					<td>-</td>
+					<td class = "btt">
+						<button ID = "goldminus" class = "mid bttbluebuttons">-</button>
+					</td>
+					<td class = "btt">
+						<button ID = "goldplus" class = "mid bttbluebuttons">+</button>
+					</td>
+				</tr>
+				<tr>
+					<td>Total</td>
+					<td ID = "totalproductiontd"></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</table>
+
+			<table class = "rightunderneathrestable">
+				<tr>
+					<th colspan="3">
+						<br>
+					</th>
+				</tr>
+				<tr>
+					<td class = "mtt">
+						<button ID = "addabuilding" class = "midbutton mid bttbluebuttons">Add A Building</button>
+					</td>
+					<td class = "mtt">
+						<button ID = "addacabin" class = "midbutton mid bttbluebuttons">Add Cabin</button>
+					</td>
+					<td>
+						<span class = "cabinpic"></span> <span ID = "numberbuildings">0</span>
+					</td>
+				</tr>
+				<tr>
+					<td class = "mtt">
+						<button ID = "removeabuilding" class = "midbutton mid bttbluebuttons">Remove A Building</button>
+					</td>
+					<td class = "mtt">
+						<button ID = "removeacabin" class = "midbutton mid bttbluebuttons">Remove Cabin</button>
+					</td>
+					<td>
+						<span class = "barrackspic"></span> <span ID = "armysize">-</span>
+					</td>
+				</tr>
+				<tr>
+					<td colspan = "3">
+						<div class = "tdbreaker"></div>
+					</td>
+				</tr>
+				<tr>
+					<td class = "mtt">
+						<button ID = "lockbuildings" class = "midbutton mid bttbluebuttons">Lock All Buildings</button>
+					</td>
+					<td class = "mtt">
+						<button ID = "undoaction" class = "midbutton mid bttbluebuttons">Undo</button>
+					</td>
+					<td>
+						<span>Construction Speed: </span><span ID = "constrspeedp">100%</span>
+					</td>
+				</tr>
+				<tr>
+					<td class = "mtt">
+						<button ID = "lockresources" class = "midbutton mid bttbluebuttons">Lock All Resources</button>
+					</td>
+					<td class = "mtt">
+						<button ID = "redoaction" class = "midbutton mid bttbluebuttons">Redo</button>
+					</td>
+					<td>
+						<span class = "cartspic"></span> <span ID = "numbercarts">-</span>
+					</td>
+				</tr>
+				<tr>
+					<td class = "mtt">
+						<button ID = "unlockall" class = "smallerbutton mid bttbluebuttons">Unlock All</button>
+					</td>
+					<td class = "mtt">
+						<button ID = "resetmap" class = "smallerbutton mid bttbluebuttons">Reset Map</button>
+					</td>
+					<td>
+						<span class = "shipspic"></span> <span ID = "numbertradeships">-</span>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div ID = "miltab">
+			mil tab
+		</div>
+		
+	</div>
+
+
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+	<script src="mainfunctions.js"></script>
+	<script src="citycalcs.js"></script>
+	<script src="buildingsobject.js"></script>
+	
+</body>
+</html>
