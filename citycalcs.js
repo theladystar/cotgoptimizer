@@ -14,6 +14,11 @@ function updateCityRes () {
 	var foodstorage = 175000;
 	var resprotected = 0;
 
+	var numberbuildings = 0;
+	var numbercarts = 0;
+	var numbertrships = 0;
+	var construcspeed = 100;
+
 
 	var numberspots = $('#cityholder').find('div');
 	$('.fields').removeClass('fields');
@@ -26,27 +31,33 @@ function updateCityRes () {
 			var building = $(thisdiv).attr('data-building');
 
 			if (building == 'foresters') {
+				numberbuildings += 1;
 				var amt = woodtotalprod;
 				woodtotalprod = updateWoodProd(thisdiv, amt);
 			}
 			else if (building == 'stonemine') {
+				numberbuildings += 1;
 				var amt = stonetotalprod;
 				stonetotalprod = updateStoneProd(thisdiv, amt);
 			}
 			else if (building == 'ironmine') {
+				numberbuildings += 1;
 				var amt = irontotalprod;
 				irontotalprod = updateIronProd(thisdiv, amt);
 			}
 			else if (building == 'farm') {
+				numberbuildings += 1;
 				var amt = foodtotalprod;
 				foodtotalprod = updateFoodProd(thisdiv, amt);
 				updateFields(thisdiv);
 			}
 			else if (building == 'villa') {
+				numberbuildings += 1;
 				var amt = goldtotalprod;
 				goldtotalprod = updateGoldProd(thisdiv, amt);
 			}
 			else if (building == 'storehouse') {
+				numberbuildings += 1;
 				var wstor = woodstorage;
 				var sstore = stonestorage;
 				var istore = ironstorage;
@@ -56,6 +67,23 @@ function updateCityRes () {
 				stonestorage = newamts[1];
 				ironstorage = newamts[2];
 				foodstorage = newamts[3];
+			}
+			else if (building == 'hide') {
+				numberbuildings += 1;
+				var amt = resprotected;
+				resprotected = updateHideAmt(thisdiv, amt);
+			}
+			else if (building == 'forum') {
+				numberbuildings += 1;
+				numbercarts += buildingsobject['forum']['stats']['tradecarts'];
+			}
+			else if (building == 'port') {
+				numberbuildings += 1;
+				numbertrships += buildingsobject['port']['stats']['tradeships'];
+			}
+			else if (building == 'cabin') {
+				numberbuildings += 1;
+				construcspeed += 100;
 			}
 		}
 	}
@@ -76,11 +104,17 @@ function updateCityRes () {
 	$('#foodproductiontd').text(foodtotalprod);
 	$('#goldproductiontd').text(goldtotalprod);
 	$('#totalproductiontd').text( (woodtotalprod + stonetotalprod + irontotalprod + foodtotalprod + goldtotalprod) );
+	$('#woodprotectedtd, #stoneprotectedtd, #ironprotectedtd, #foodprotectedtd').text(resprotected);
 
 	$('#woodstoragetd').text(woodstorage);
 	$('#stonestoragetd').text(stonestorage);
 	$('#ironstoragetd').text(ironstorage);
 	$('#foodstoragetd').text(foodstorage);
+
+	$('#constrspeedp').text( (construcspeed + '%') );
+	$('#numberbuildings').text(numberbuildings);
+	$('#numbercarts').text(numbercarts);
+	$('#numbertradeships').text(numbertrships);
 
 }
 
@@ -124,6 +158,31 @@ function updateStorage(thisdiv, woodstorage, stonestorage, ironstorage, foodstor
 
 	var storageamts = [finalwoodtot, finalstonetot, finalirontot, finalfoodtot];
 	return storageamts;
+}
+
+function updateHideAmt(thisdiv, resprotected) {
+
+	var toadd = buildingsobject['hide']['stats']['reshidden'];
+	var neighbours = getEightNeighbours(thisdiv);
+
+	var forestnodes = 0;
+
+	var j;
+	for (j = 0; j < neighbours.length; j++) { 
+		var current = neighbours[j];
+
+		if ($('#' + current).length > 0) {
+			if ($('#' + current).hasClass('forest')) {
+				forestnodes += 1;
+			}
+		}
+	}
+	var addnodes = ( toadd * ( buildingsobject['forest']['stats']['woodresnodebonus'] / 100 ) ) * forestnodes;
+	var plusnodes = toadd + addnodes;
+
+	resprotected += plusnodes;
+	return resprotected;
+
 }
 
 // update city wood production value

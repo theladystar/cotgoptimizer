@@ -1,3 +1,23 @@
+<!-- 
+
+	City optimizer for Crown of the Gods browsergame (www.crownofthegods.com)
+
+	Created by Andrea Garratt ('Star' in-game), 2019
+
+	Contact: andreagarratt2017@gmail.com, or mail Star in-game.
+
+	Commits from over cotgoptimizer's development can be found at https://github.com/theladystar/cotgoptimizer 
+
+
+
+	(Some UI inspiration has been taken from Hexist's city optimizer, however ALL code on this project is my own and written from scratch in javascript)
+
+	My javascript is intentionally left unobfuscated, so that other users can take this code and build on from it, if they want to. (This is also the reason I've linked my github repo above)
+
+	If you are building on from this code, it would be nice if you forked it on github so I can see it, but ofc you don't have to :)
+
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -244,7 +264,7 @@
 				</table>
 			</div>
 
-			<div ID = "spothovermenu">
+			<div ID = "spothovermenu" style="display: none;">
 				
 				
 			</div>
@@ -756,9 +776,9 @@
 				</tr>
 				<tr>
 					<td>Wood</td>
-					<td ID = "woodproductiontd"></td>
-					<td ID = "woodstoragetd"></td>
-					<td ID = "woodprotectedtd"></td>
+					<td ID = "woodproductiontd" class = "centrefl greentd"></td>
+					<td ID = "woodstoragetd" class = "centrefl lgreytd"></td>
+					<td ID = "woodprotectedtd" class = "centrefl dgreytd"></td>
 					<td class = "btt">
 						<button ID = "woodminus" class = "mid bttbluebuttons">-</button>
 					</td>
@@ -768,9 +788,9 @@
 				</tr>
 				<tr>
 					<td>Stone</td>
-					<td ID = "stoneproductiontd"></td>
-					<td ID = "stonestoragetd"></td>
-					<td ID = "stoneprotectedtd"></td>
+					<td ID = "stoneproductiontd" class = "centrefl greentd"></td>
+					<td ID = "stonestoragetd" class = "centrefl lgreytd"></td>
+					<td ID = "stoneprotectedtd" class = "centrefl dgreytd"></td>
 					<td class = "btt">
 						<button ID = "stoneminus" class = "mid bttbluebuttons">-</button>
 					</td>
@@ -780,9 +800,9 @@
 				</tr>
 				<tr>
 					<td>Iron</td>
-					<td ID = "ironproductiontd"></td>
-					<td ID = "ironstoragetd"></td>
-					<td ID = "ironprotectedtd"></td>
+					<td ID = "ironproductiontd" class = "centrefl greentd"></td>
+					<td ID = "ironstoragetd" class = "centrefl lgreytd"></td>
+					<td ID = "ironprotectedtd" class = "centrefl dgreytd"></td>
 					<td class = "btt">
 						<button ID = "ironminus" class = "mid bttbluebuttons">-</button>
 					</td>
@@ -792,9 +812,9 @@
 				</tr>
 				<tr>
 					<td>Food</td>
-					<td ID = "foodproductiontd"></td>
-					<td ID = "foodstoragetd"></td>
-					<td ID = "foodprotectedtd"></td>
+					<td ID = "foodproductiontd" class = "centrefl greentd"></td>
+					<td ID = "foodstoragetd" class = "centrefl lgreytd"></td>
+					<td ID = "foodprotectedtd" class = "centrefl dgreytd"></td>
 					<td class = "btt">
 						<button ID = "foodminus" class = "mid bttbluebuttons">-</button>
 					</td>
@@ -804,9 +824,9 @@
 				</tr>
 				<tr>
 					<td>Gold</td>
-					<td ID = "goldproductiontd"></td>
-					<td>-</td>
-					<td>-</td>
+					<td ID = "goldproductiontd" class = "centrefl greentd"></td>
+					<td class = "centrefl lgreytd">-</td>
+					<td class = "centrefl dgreytd">-</td>
 					<td class = "btt">
 						<button ID = "goldminus" class = "mid bttbluebuttons">-</button>
 					</td>
@@ -816,7 +836,7 @@
 				</tr>
 				<tr>
 					<td>Total</td>
-					<td ID = "totalproductiontd"></td>
+					<td ID = "totalproductiontd" class = "centrefl greentd"></td>
 					<td></td>
 					<td></td>
 					<td></td>
@@ -837,7 +857,7 @@
 					<td class = "mtt">
 						<button ID = "addacabin" class = "midbutton mid bttbluebuttons">Add Cabin</button>
 					</td>
-					<td>
+					<td class = "endrow">
 						<span class = "cabinpic"></span> <span ID = "numberbuildings">0</span>
 					</td>
 				</tr>
@@ -848,7 +868,7 @@
 					<td class = "mtt">
 						<button ID = "removeacabin" class = "midbutton mid bttbluebuttons">Remove Cabin</button>
 					</td>
-					<td>
+					<td class = "endrow">
 						<span class = "barrackspic"></span> <span ID = "armysize">-</span>
 					</td>
 				</tr>
@@ -864,7 +884,7 @@
 					<td class = "mtt">
 						<button ID = "undoaction" class = "midbutton mid bttbluebuttons">Undo</button>
 					</td>
-					<td>
+					<td class = "endrow">
 						<span>Construction Speed: </span><span ID = "constrspeedp">100%</span>
 					</td>
 				</tr>
@@ -875,7 +895,7 @@
 					<td class = "mtt">
 						<button ID = "redoaction" class = "midbutton mid bttbluebuttons">Redo</button>
 					</td>
-					<td>
+					<td class = "endrow">
 						<span class = "cartspic"></span> <span ID = "numbercarts">-</span>
 					</td>
 				</tr>
@@ -886,7 +906,7 @@
 					<td class = "mtt">
 						<button ID = "resetmap" class = "smallerbutton mid bttbluebuttons">Reset Map</button>
 					</td>
-					<td>
+					<td class = "endrow">
 						<span class = "shipspic"></span> <span ID = "numbertradeships">-</span>
 					</td>
 				</tr>
