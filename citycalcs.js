@@ -1,6 +1,6 @@
-
+// runs at init 
+// fill object function. runs updateResources() at end.
 function runCity () {
-
 	var numberspots = $('#cityholder').find('div');
 
 	var i;
@@ -39,19 +39,75 @@ function runCity () {
 		if ( $(thisdiv).hasClass("buildingmap") ) {
 			var building = $(thisdiv).attr('data-building');
 			cityspots[theID]['buil'] = building;
+			var neighbours = getEightNeighbours(theID)
+
+			if (cityspots[theID]['buil'] == 'foresters') {
+				var j;
+				for (j = 0; j < neighbours.length; j++) { 
+					var current = neighbours[j];
+					var building = cityspots[current]['buil']
+
+					if (building == 'sawmill') {
+						cityspots[theID]['proc'] = 1;
+					}
+					else {
+						cityspots[theID]['proc'] = 0;
+					}
+				}
+			}
+			else if (cityspots[theID]['buil'] == 'stonemine') {
+				var j;
+				for (j = 0; j < neighbours.length; j++) { 
+					var current = neighbours[j];
+					var building = cityspots[current]['buil']
+
+					if (building == 'masons') {
+						cityspots[theID]['proc'] = 1;
+					}
+					else {
+						cityspots[theID]['proc'] = 0;
+					}
+				}
+			}
+			else if (cityspots[theID]['buil'] == 'ironmine') {
+				var j;
+				for (j = 0; j < neighbours.length; j++) { 
+					var current = neighbours[j];
+					var building = cityspots[current]['buil']
+
+					if (building == 'smelter') {
+						cityspots[theID]['proc'] = 1;
+					}
+					else {
+						cityspots[theID]['proc'] = 0;
+					}
+				}
+			}
+			else if (cityspots[theID]['buil'] == 'farm') {
+				var j;
+				for (j = 0; j < neighbours.length; j++) { 
+					var current = neighbours[j];
+					var building = cityspots[current]['buil']
+
+					if (building == 'grainmill') {
+						cityspots[theID]['proc'] = 1;
+					}
+					else {
+						cityspots[theID]['proc'] = 0;
+					}
+				}
+			}
 		} else {
 			cityspots[theID]['buil'] = "";
 		}
-
 	}
 
 	updateResources();
-
 }
 
-
+// populate res tab, and add lockedspots and processing-building y/n to main object. runs runOptimizer() at end.
+// runs at end of runCity(), and after a building is placed or removed.
 function updateResources () {
-
 	// init
 	var woodtotalprod = 300;
 	var stonetotalprod = 0;
@@ -76,6 +132,14 @@ function updateResources () {
 	for (var mapspot in cityspots) {
 
 		var building = cityspots[mapspot]['buil'];
+		var thisdiv = $('#' + mapspot);
+		var neighbours = getEightNeighbours(mapspot);
+
+		if ( $(thisdiv).hasClass("maplock") ) {
+			cityspots[mapspot]['lck'] = true;
+		} else {
+			cityspots[mapspot]['lck'] = false;
+		}
 
 		if  (building.length > 0) { // regular buildings
 
@@ -83,22 +147,66 @@ function updateResources () {
 				numberbuildings += 1;
 				var amt = woodtotalprod;
 				woodtotalprod = woodProduction(mapspot, amt);
+				cityspots[mapspot]['proc'] = 0;
+
+				var j;
+				for (j = 0; j < neighbours.length; j++) { 
+					var current = neighbours[j];
+					var tbuilding = cityspots[current]['buil'];
+
+					if (tbuilding == 'sawmill') {
+						cityspots[mapspot]['proc'] = 1;
+					}
+				}
 			}
 			else if (building == 'stonemine') {
 				numberbuildings += 1;
 				var amt = stonetotalprod;
 				stonetotalprod = stoneProduction(mapspot, amt);
+				cityspots[mapspot]['proc'] = 0;
+
+				var j;
+				for (j = 0; j < neighbours.length; j++) { 
+					var current = neighbours[j];
+					var tbuilding = cityspots[current]['buil'];;
+
+					if (tbuilding == 'masons') {
+						cityspots[mapspot]['proc'] = 1;
+					}
+				}
 			}
 			else if (building == 'ironmine') {
 				numberbuildings += 1;
 				var amt = irontotalprod;
 				irontotalprod = ironProduction(mapspot, amt);
+				cityspots[mapspot]['proc'] = 0;
+
+				var j;
+				for (j = 0; j < neighbours.length; j++) { 
+					var current = neighbours[j];
+					var tbuilding = cityspots[current]['buil'];
+
+					if (tbuilding == 'smelter') {
+						cityspots[mapspot]['proc'] = 1;
+					}
+				}
 			}
 			else if (building == 'farm') {
 				numberbuildings += 1;
 				var amt = foodtotalprod;
 				foodtotalprod = foodProduction(mapspot, amt);
+				cityspots[mapspot]['proc'] = 0;
 				updateFields(mapspot);
+
+				var j;
+				for (j = 0; j < neighbours.length; j++) { 
+					var current = neighbours[j];
+					var tbuilding = cityspots[current]['buil'];
+
+					if (tbuilding == 'grainmill') {
+						cityspots[mapspot]['proc'] = 1;
+					}
+				}
 			}
 			else if (building == 'villa') {
 				numberbuildings += 1;
@@ -134,8 +242,19 @@ function updateResources () {
 				numberbuildings += 1;
 				construcspeed += 100;
 			}
+			else if (building == 'sawmill' || building == 'masons' || building == 'smelter' || building == 'grainmill') {
+				numberbuildings += 1;
+			}
+			else if (building == 'barracks') {
+				numberbuildings += 1;
+			}
+			else if (building == 'castle') {
+				numberbuildings += 1;
+			}
+			else if (building == 'guardhouse' || building == 'arena' || building == 'stable' || building == 'sorctower' || building == 'academy' || building == 'blacksmith' || building == 'shipyard') {
+				numberbuildings += 1;
+			}
 		}
-
 
 	}
 
@@ -166,12 +285,7 @@ function updateResources () {
 	$('#numberbuildings').text(numberbuildings);
 	$('#numbercarts').text(numberWithCommas(numbercarts));
 	$('#numbertradeships').text(numberWithCommas(numbertrships));
-
-
-	runOptimizer();
-
 }
-
 
 function woodProduction (thisdiv, woodtotalprod) {
 
@@ -353,11 +467,10 @@ function goldProduction(thisdiv, goldtotalprod) {
 		}
 	}
 	var addforums = ( toadd * ( buildingsobject['forum']['stats']['goldtaxbonus'] / 100 ) ) * forumbuildings;
-	var plusforums = toadd + addforums;
 	var addports = ( toadd * ( buildingsobject['port']['stats']['goldtaxbonus'] / 100 ) ) * portbuildings;
-	var plusports = plusforums + addports;
+	var plusboth = toadd + addforums + addports;
 
-	goldtotalprod += plusports;
+	goldtotalprod += plusboth;
 	return goldtotalprod;
 }
 
@@ -448,6 +561,7 @@ function getEightNeighbours(thisdiv) {
 	return neighbours;
 }
 
+// update farm fields
 function updateFields (thediv) {
 
 	var neighbours = getEightNeighbours(thediv);
@@ -466,9 +580,403 @@ function updateFields (thediv) {
 	}
 }
 
+function runOptimizer (spot) {
+	spot = spot || 0;
+	if (spot == 0) {
+		for (var mapspot in cityspots) {
+			var neighbours = getEightNeighbours(mapspot);
+			cityspots[mapspot]['optim'] = {};
+			cityspots[mapspot]['optim']['if-f'] = runForestersPseudo(neighbours);
+			cityspots[mapspot]['optim']['if-s'] = runStoneMinePseudo(neighbours);
+			cityspots[mapspot]['optim']['if-i'] = runIronMinePseudo(neighbours);
+			cityspots[mapspot]['optim']['if-a'] = runFarmPseudo(neighbours);
+			cityspots[mapspot]['optim']['if-l'] = runSawmillPseudo(neighbours);
+			cityspots[mapspot]['optim']['if-h'] = runMasonsPseudo(neighbours);
+			cityspots[mapspot]['optim']['if-z'] = runSmelterPseudo(neighbours);
+			cityspots[mapspot]['optim']['if-g'] = runGMillPseudo(neighbours);
+			cityspots[mapspot]['optim']['if-c'] = runCabinPseudo(neighbours);
+			cityspots[mapspot]['optim']['if-v'] = runVillaPseudo(neighbours);
+			cityspots[mapspot]['optim']['if-m'] = runForumPseudo(neighbours);
+			cityspots[mapspot]['optim']['if-o'] = runPortPseudo(neighbours);
+		}
+	}
+	else if (spot != 0) {
 
-function runOptimizer () {
+		cityspots[spot]['optim'] = {};
 
+		var neighbours = getEightNeighbours(spot);
+
+		var j;
+		for (j = 0; j < neighbours.length; j++) { 
+			var tcurrent = neighbours[j];
+
+			var tneighbours = getEightNeighbours(tcurrent);
+
+			cityspots[tcurrent]['optim']['if-f'] = runForestersPseudo(tneighbours);
+			cityspots[tcurrent]['optim']['if-s'] = runStoneMinePseudo(tneighbours);
+			cityspots[tcurrent]['optim']['if-i'] = runIronMinePseudo(tneighbours);
+			cityspots[tcurrent]['optim']['if-a'] = runFarmPseudo(tneighbours);
+			cityspots[tcurrent]['optim']['if-l'] = runSawmillPseudo(tneighbours);
+			cityspots[tcurrent]['optim']['if-h'] = runMasonsPseudo(tneighbours);
+			cityspots[tcurrent]['optim']['if-z'] = runSmelterPseudo(tneighbours);
+			cityspots[tcurrent]['optim']['if-g'] = runGMillPseudo(tneighbours);
+			cityspots[tcurrent]['optim']['if-c'] = runCabinPseudo(tneighbours);
+			cityspots[tcurrent]['optim']['if-v'] = runVillaPseudo(tneighbours);
+			cityspots[tcurrent]['optim']['if-m'] = runForumPseudo(tneighbours);
+			cityspots[tcurrent]['optim']['if-o'] = runPortPseudo(tneighbours);
+		}
+	}
+}
+
+function runForestersPseudo ( neighbours) {
+
+	var toadd = buildingsobject['foresters']['stats']['woodproduction'];
+	var nodes = 0;
+	var processorbuilding = 0;
+	var cabins = 0;
+
+	var j;
+	for (j = 0; j < neighbours.length; j++) { 
+		var current = neighbours[j];
+
+		if ( $('#' + current).length > 0 ) {
+			var tbuilding = cityspots[current]['buil'];
+
+			if (tbuilding.length > 0) {
+				if (tbuilding == 'forest') {
+					nodes += 1;
+				}
+				else if (tbuilding == 'sawmill') {
+					processorbuilding = 1;
+				}
+				else if (tbuilding == 'cabin') {
+					cabins += 1;
+				}
+			}
+		}
+	}
+	var addnodes = toadd + ((toadd * (buildingsobject['forest']['stats']['woodresnodebonus'] / 100)) * nodes);
+	var addcabins = addnodes + ((addnodes * (buildingsobject['cabin']['stats']['cabinproductionbonus'] / 100)) * cabins);
+	var finalcount = addcabins + ((addcabins * (buildingsobject['sawmill']['stats']['woodprocessingbonus'] / 100)) * processorbuilding);
+	return finalcount;
+}
+
+function runStoneMinePseudo (neighbours) {
+
+	var toadd = buildingsobject['stonemine']['stats']['stoneproduction'];
+	var nodes = 0;
+	var processorbuilding = 0;
+	var cabins = 0;
+
+	var j;
+	for (j = 0; j < neighbours.length; j++) { 
+		var current = neighbours[j];
+
+		if ($('#' + current).length > 0) {
+			var tbuilding = cityspots[current]['buil'];
+
+			if (tbuilding == 'stone') {
+				nodes += 1;
+			}
+			else if (tbuilding == 'masons') {
+				processorbuilding = 1;
+			}
+			else if (tbuilding == 'cabin') {
+				cabins += 1;
+			}
+		}
+	}
+	var addnodes = toadd + ((toadd * (buildingsobject['stone']['stats']['stoneresnodebonus'] / 100)) * nodes);
+	var addcabins = addnodes + ((addnodes * (buildingsobject['cabin']['stats']['cabinproductionbonus'] / 100)) * cabins);
+	var finalcount = addcabins + ((addcabins * (buildingsobject['masons']['stats']['stoneprocessingbonus'] / 100)) * processorbuilding);
+	return finalcount;
+}
+
+function runIronMinePseudo (neighbours) {
+
+	var toadd = buildingsobject['ironmine']['stats']['ironproduction'];
+	var nodes = 0;
+	var processorbuilding = 0;
+	var cabins = 0;
+
+	var j;
+	for (j = 0; j < neighbours.length; j++) { 
+		var current = neighbours[j];
+
+		if ($('#' + current).length > 0) {
+			var tbuilding = cityspots[current]['buil'];
+
+			if (tbuilding == 'iron') {
+				nodes += 1;
+			}
+			else if (tbuilding == 'smelter') {
+				processorbuilding = 1;
+			}
+			else if (tbuilding == 'cabin') {
+				cabins += 1;
+			}
+		}
+	}
+	var addnodes = toadd + ((toadd * (buildingsobject['iron']['stats']['ironresnodebonus'] / 100)) * nodes);
+	var addcabins = addnodes + ((addnodes * (buildingsobject['cabin']['stats']['cabinproductionbonus'] / 100)) * cabins);
+	var finalcount = addcabins + ((addcabins * (buildingsobject['smelter']['stats']['ironprocessingbonus'] / 100)) * processorbuilding);
+	return finalcount;
+}
+
+function runFarmPseudo (neighbours) {
+
+	var toadd = buildingsobject['farm']['stats']['foodproduction'];
+	var firstfield = 0
+	var subseqfields = 0;
+	var nodes = 0;
+	var processorbuilding = 0;
+	var cabins = 0;
+
+	var j;
+	for (j = 0; j < neighbours.length; j++) { 
+		var current = neighbours[j];
+
+		if ($('#' + current).length > 0) {
+			var tbuilding = cityspots[current]['buil'];
+
+			if ( tbuilding.length == 0 && cityspots[current]['la'] && $('#cityholder').hasClass('landlocked') ) {
+				if (firstfield == 0) {
+					firstfield = 1;
+				} else {
+					subseqfields += 1;
+				}
+			}
+			else if ( tbuilding.length == 0 && cityspots[current]['wa'] && !cityspots[current]['ws'] && $('#cityholder').hasClass('waterside') ) {
+				if (firstfield == 0) {
+					firstfield = 1;
+				} else {
+					subseqfields += 1;
+				}
+			}
+			else if (tbuilding == 'lake') {
+				nodes += 1;
+			}
+			else if (tbuilding == 'grainmill') {
+				processorbuilding = 1;
+			}
+			else if (tbuilding == 'cabin') {
+				cabins += 1;
+			}
+		}
+	}
+	var addfields = toadd + ((toadd * 0.5) * firstfield) + ((toadd * 0.4) * subseqfields);
+	var addnodes = addfields + ((addfields * (buildingsobject['lake']['stats']['foodresnodebonus'] / 100)) * nodes);
+	var addcabins = addnodes + ((addnodes * (buildingsobject['cabin']['stats']['cabinproductionbonus'] / 100)) * cabins);
+	var finalcount = addcabins + ((addcabins * (buildingsobject['grainmill']['stats']['foodprocessingbonus'] / 100)) * processorbuilding);
+	return finalcount;
+}
+
+function runSawmillPseudo (neighbours) {
+
+	var noprocessor = 0;
+
+	var j;
+	for (j = 0; j < neighbours.length; j++) { 
+		var current = neighbours[j];
+
+		if ($('#' + current).length > 0) {
+			var tbuilding = cityspots[current]['buil'];
+
+			if (tbuilding == 'foresters') {
+				if (cityspots[current]['proc'] == 0) {
+					noprocessor += 1;
+				}
+			}
+		}
+	}
+	var toadd = buildingsobject['foresters']['stats']['woodproduction'];
+	var procbonus = ( toadd * ( buildingsobject['sawmill']['stats']['woodprocessingbonus'] / 100 ) ) * noprocessor;
+	if (procbonus > 0) {
+		procbonus += toadd;
+	}
+	return procbonus;
+}
+
+function runMasonsPseudo (neighbours) {
+
+	var noprocessor = 0;
+
+	var j;
+	for (j = 0; j < neighbours.length; j++) { 
+		var current = neighbours[j];
+
+		if ($('#' + current).length > 0) {
+			var tbuilding = cityspots[current]['buil'];
+
+			if (tbuilding == 'stonemine') {
+				if (cityspots[current]['proc'] == 0) {
+					noprocessor += 1;
+				}
+			}
+		}
+	}
+	var toadd = buildingsobject['stonemine']['stats']['stoneproduction'];
+	var procbonus = ( toadd * ( buildingsobject['masons']['stats']['stoneprocessingbonus'] / 100 ) ) * noprocessor;
+	if (procbonus > 0) {
+		procbonus += toadd;
+	}
+	return procbonus;
+}
+
+function runSmelterPseudo (neighbours) {
+
+	var noprocessor = 0;
+
+	var j;
+	for (j = 0; j < neighbours.length; j++) { 
+		var current = neighbours[j];
+
+		if ($('#' + current).length > 0) {
+			var tbuilding = cityspots[current]['buil'];
+
+			if (tbuilding == 'ironmine') {
+				if (cityspots[current]['proc'] == 0) {
+					noprocessor += 1;
+				}
+			}
+		}
+	}
+	var toadd = buildingsobject['ironmine']['stats']['ironproduction'];
+	var procbonus = ( toadd * ( buildingsobject['smelter']['stats']['ironprocessingbonus'] / 100 ) ) * noprocessor;
+	if (procbonus > 0) {
+		procbonus += toadd;
+	}
+	return procbonus;
+}
+
+function runGMillPseudo (neighbours) {
+
+	var noprocessor = 0;
+
+	var j;
+	for (j = 0; j < neighbours.length; j++) { 
+		var current = neighbours[j];
+
+		if ($('#' + current).length > 0) {
+			var tbuilding = cityspots[current]['buil'];
+
+			if (tbuilding == 'farm') {
+				if (cityspots[current]['proc'] == 0) {
+					noprocessor += 1;
+				}
+			}
+		}
+	}
+	var toadd = buildingsobject['farm']['stats']['foodproduction'];
+	var procbonus = ( toadd * ( buildingsobject['grainmill']['stats']['foodprocessingbonus'] / 100 ) ) * noprocessor;
+	if (procbonus > 0) {
+		procbonus += toadd;
+	}
+	return procbonus;
+}
+
+function runVillaPseudo (neighbours) {
+
+	var toadd = buildingsobject['villa']['stats']['goldproduction'];
+	var forumbuildings = 0;
+	var portbuildings = 0;
+
+	var j;
+	for (j = 0; j < neighbours.length; j++) { 
+		var current = neighbours[j];
+
+		if ($('#' + current).length > 0) {
+			var tbuilding = cityspots[current]['buil']
+
+			if (tbuilding == 'forum') {
+				forumbuildings += 1;
+			}
+			else if (tbuilding == 'port') {
+				portbuildings += 1;
+			}
+		}
+	}
+	var addforums = ( toadd * ( buildingsobject['forum']['stats']['goldtaxbonus'] / 100 ) ) * forumbuildings;
+	var addports = ( toadd * ( buildingsobject['port']['stats']['goldtaxbonus'] / 100 ) ) * portbuildings;
+	var plusboth = toadd + addforums + addports;
+	return plusboth;
+}
+
+function runCabinPseudo (neighbours) {
+
+	var prodbuils = 0;
+
+	var j;
+	for (j = 0; j < neighbours.length; j++) { 
+		var current = neighbours[j];
+
+		if ($('#' + current).length > 0) {
+			var tbuilding = cityspots[current]['buil'];
+
+			if (tbuilding == 'foresters') {
+				prodbuils += 1;
+			}
+			else if (tbuilding == 'stonemine') {
+				prodbuils += 1;
+			}
+			else if (tbuilding == 'ironmine') {
+				prodbuils += 1;
+			}
+			else if (tbuilding == 'farm') {
+				prodbuils += 1;
+			}
+		}
+	}
+	var toadd = buildingsobject['foresters']['stats']['woodproduction'];
+	var cabinbonus = ( toadd * ( buildingsobject['cabin']['stats']['cabinproductionbonus'] / 100 ) ) * prodbuils;
+	if (cabinbonus > 0) {
+		cabinbonus += toadd;
+	}
+	return cabinbonus;
+}
+
+function runForumPseudo (neighbours) {
+	var prodbuils = 0;
+	var j;
+	for (j = 0; j < neighbours.length; j++) { 
+		var current = neighbours[j];
+
+		if ($('#' + current).length > 0) {
+			var tbuilding = cityspots[current]['buil'];
+
+			if (tbuilding == 'villa') {
+				prodbuils += 1;
+			}
+		}
+	}
+	var toadd = buildingsobject['villa']['stats']['goldproduction'];
+	var forumbonus = ( toadd * ( buildingsobject['forum']['stats']['goldtaxbonus'] / 100 ) ) * prodbuils;
+	if (forumbonus > 0) {
+		forumbonus += toadd;
+	}
+	return forumbonus;
+}
+
+function runPortPseudo (neighbours) {
+	var prodbuils = 0;
+	var j;
+	for (j = 0; j < neighbours.length; j++) { 
+		var current = neighbours[j];
+
+		if ($('#' + current).length > 0) {
+			var tbuilding = cityspots[current]['buil'];
+
+			if (tbuilding == 'villa') {
+				prodbuils += 1;
+			}
+		}
+	}
+	var toadd = buildingsobject['villa']['stats']['goldproduction'];
+	var portbonus = ( toadd * ( buildingsobject['port']['stats']['goldtaxbonus'] / 100 ) ) * prodbuils;
+	if (portbonus > 0) {
+		portbonus += toadd;
+	}
+	return portbonus;
 }
 
 

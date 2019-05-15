@@ -11,6 +11,7 @@ $( document ).ready(function() {
 	// init stuff
 	isLand();
 	runCity();
+	runOptimizer();
 
 
 	// tooptips on build menu
@@ -188,6 +189,7 @@ function placeBuilding (clickedspot, buildtype) {
 		}
 	}
 	updateResources();
+	runOptimizer(clickedspot);
 }
 
 // place the building on the map using the hotkeys
@@ -217,6 +219,7 @@ function placeBuildingFromHotkey (clickedspot, e) {
 			$("#" + clickedspot).removeClass().removeAttr('data-building');
 			cityspots[clickedspot]['buil'] = '';
 			updateResources();
+			runOptimizer(clickedspot);
 		}
 	} else {}
 
@@ -232,6 +235,44 @@ function placeBuildingFromMenu (clickedspot, building) {
 	}
 	$( $("#" + clickedspot).parent() ).removeClass('activetd');
 	clickedspot = '';
+}
+
+// lock a spot/building with spacebar
+function lockspot (clickedspot) {
+	cityspots[clickedspot]['lck'] = true;
+	var locked = 'maplock';
+	var lockcss = 'url(images/icons/locksmall.png) no-repeat';
+
+	if ( $("#" + clickedspot).hasClass('maplock') ) {
+		unlockspot(clickedspot);
+	}
+	else if ( $("#" + clickedspot).hasClass('buildingmap') ) {
+		var currbuilding = $("#" + clickedspot).attr('data-building');
+		var background = buildingsobject[currbuilding]['background'];
+		var newbackground = lockcss + "," + background;
+		$("#" + clickedspot).css('background', newbackground);
+		$("#" + clickedspot).addClass(locked).attr('data-lock', locked);
+	} else {
+		$("#" + clickedspot).css('background', lockcss);
+		$("#" + clickedspot).addClass(locked).attr('data-lock', locked);
+	}
+}
+
+// unlock the spot/building again with spacebar
+function unlockspot (clickedspot) {
+	cityspots[clickedspot]['lck'] = false;
+	var locked = 'maplock';
+
+	if ( $("#" + clickedspot).hasClass('buildingmap') ) {
+		var currbuilding = $("#" + clickedspot).attr('data-building');
+		var background = buildingsobject[currbuilding]['background'];
+		$("#" + clickedspot).css('background', '');
+		$("#" + clickedspot).css('background', background);
+		$("#" + clickedspot).removeClass(locked).removeAttr('data-lock');
+	} else {
+		$("#" + clickedspot).css('background', '');
+		$("#" + clickedspot).removeClass(locked).removeAttr('data-lock');
+	}
 }
 
 // load info to res tab (initially, and when res tab button is clicked)
@@ -252,7 +293,9 @@ function milTab () {
 
 // making the map strings in the import/export menu
 function loadMapStrings () {
-	var numberspots = $('#cityholder').find('div');
+	$('#inpexplonglink').val('');
+	$('#sharestringinputcotg').val('');
+
 	var longmaplink = "http://cotgoptimizer.com/?map=";
 	var sharestringtext = "[ShareString.1.3]";
 
@@ -264,32 +307,30 @@ function loadMapStrings () {
 		sharestringtext += ":";
 	}
 
-	var i;
-	for (i = 0; i < numberspots.length; i++) { 
-		var thisdiv = numberspots[i];
-		var thistd = $(thisdiv).parent();
-		if  ($(thisdiv).hasClass("buildingmap")) { // regular buildings
-			var building = $(thisdiv).attr('data-building');
-			var finalkey = buildingsobject[building]['key'].toUpperCase();;
+	for (var divID in cityspots) {
+
+		if  ( cityspots[divID]['buil'].length > 0) { // regular buildings
+			var building = cityspots[divID]['buil'];
+			var finalkey = buildingsobject[building]['key'].toUpperCase();
 			longmaplink += finalkey;
 			sharestringtext += finalkey;
 		}
-		else if ($(thisdiv).attr("ID") == "b11-11") { // basilica
+		else if (divID == "b11-11") { // basilica
 			longmaplink += "D";
 			sharestringtext += "D";
 		}
-		else if ( $(thistd).hasClass('ws') && $('#cityholder').hasClass('waterside')) { // open special spots (waterside)
+		else if ( cityspots[divID]['ws'] && $('#cityholder').hasClass('waterside')) { // open special spots (waterside)
 			sharestringtext += "_";
 		}
-		else if ( $(thistd).hasClass('wa') && $('#cityholder').hasClass('waterside')) { // open spots (waterside)
+		else if ( cityspots[divID]['wa'] && $('#cityholder').hasClass('waterside')) { // open spots (waterside)
 			longmaplink += "0";
 			sharestringtext += "-";
 		}
-		else if ( $(thistd).hasClass('la') && $('#cityholder').hasClass('landlocked')) { // open spots (landlocked)
+		else if ( cityspots[divID]['la'] && $('#cityholder').hasClass('landlocked')) { // open spots (landlocked)
 			longmaplink += "0";
 			sharestringtext += "-";
 		}
-		else if (!$(thisdiv).hasClass("buildingmap")) {
+		else if ( cityspots[divID]['buil'].length == 0) {
 			longmaplink += "0";
 			sharestringtext += "#";
 		}
@@ -299,7 +340,7 @@ function loadMapStrings () {
 	sharestringtext += "[/ShareString]";
 
 	$('#inpexplonglink').val(longmaplink);
-	$('#sharestringinputcotg').text(sharestringtext);
+	$('#sharestringinputcotg').val(sharestringtext);
 }
 
 // loading in an external cotg sharestring
@@ -307,9 +348,8 @@ function loadCotGSharestring (string) {
 	var removest = string.replace('[ShareString.1.3]','').replace('[/ShareString]','');
 	var watercheck = removest.substring(0, 1);
 	var finalstring = removest.replace(':','').replace(';','');
-	var numberspots = $('#cityholder').find('div');
 
-	if (finalstring.length == numberspots.length) {
+	if (finalstring.length == Object.keys(cityspots).length) {
 
 		if (watercheck == ";") {
 			isWater();
@@ -321,10 +361,10 @@ function loadCotGSharestring (string) {
 			errorMessage("Invalid ShareString");
 		}
 
-		var i;
-		for (i = 0; i < numberspots.length; i++) { 
-			var thisdiv = numberspots[i];
+		var i = 0;
+		for (var divID in cityspots) { 
 			var building = finalstring[i];
+			i++;
 
 			if (building == "-") {} 
 			else if (building == "#") {}
@@ -334,16 +374,21 @@ function loadCotGSharestring (string) {
 				var buildkey = building.toLowerCase();
 				if (hotkeys.hasOwnProperty(buildkey)) {
 					var matchingbuilding = hotkeys[buildkey];
-					$(thisdiv).removeClass().removeAttr('data-building').addClass(matchingbuilding).addClass('buildingmap').attr('data-building', matchingbuilding);
+					$('#' + divID)
+					.removeClass()
+					.removeAttr('data-building')
+					.addClass(matchingbuilding)
+					.addClass('buildingmap')
+					.attr('data-building', matchingbuilding);
+					cityspots[divID]['buil'] = matchingbuilding;
 				}
 			}
 		}
-
 	} else {
 		errorMessage("Invalid ShareString");
 	}
-
-	updateCityRes();
+	runCity();
+	runOptimizer();
 }
 
 // adding text to error window popup
@@ -369,3 +414,6 @@ function isWater () {
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
+
+
+
