@@ -1,13 +1,17 @@
+// global variable for last clicked/hovered spot on map
+var clickedspot = "";
+var hoveredspot = "";
+
+// generated object of all map spots
+var cityspots = {};
+
 
 $( document ).ready(function() {
 
 	// init stuff
 	isLand();
-	resTab();
+	runCity();
 
-	// global variable for last clicked/hovered spot on map
-	var clickedspot = "";
-	var hoveredspot = "";
 
 	// tooptips on build menu
 	$('.tooltipcl').mouseover(function() {
@@ -20,7 +24,6 @@ $( document ).ready(function() {
 		$('#maintooltip').text('').hide();
 	});
 
-
 	// land and water buttons in topbar
 	$('#watermap').click(function () {
 		isWater();
@@ -28,7 +31,6 @@ $( document ).ready(function() {
 	$('#landmap').click(function () {
 		isLand();
 	});
-
 
 	// yellow hover effect on map
 	$('#cityholder td').mouseover(function () {
@@ -41,7 +43,6 @@ $( document ).ready(function() {
 	}).mouseout(function () {
 			$(this).css("background-color","transparent");
 	});
-
 
 	// updating clickedspot, and opening build menu, on click
 	$('#cityholder td').click(function () {
@@ -57,17 +58,20 @@ $( document ).ready(function() {
 			$('#selectabuildingmenu').show();
 		}
 	});
-	// when a building on the build menu gets clicked, place the building on the map
+	// when a building on the build menu gets clicked, place the building on the map, and clear clickedspot
 	$('.b').click(function() {
 		placeBuildingFromMenu(clickedspot, this);
 		$('#selectabuildingmenu').hide();
 		$( $("#" + clickedspot).parent() ).removeClass('activetd');
 		clickedspot = '';
 	});
+	// x button to close build menu
+	$('#xbselmenu').click(function () {
+		$('#selectabuildingmenu').hide();
+	});
 
 	// updating hoveredspot, on mouseover
 	$('#cityholder td').mouseover(function () {
-
 		if (hoveredspot == "") {
 			if ( $('#cityholder').hasClass('landlocked') && $(this).hasClass('la') ) {
 				hoveredspot = $( $(this).children('div') ).attr('ID');
@@ -76,19 +80,9 @@ $( document ).ready(function() {
 				hoveredspot = $( $(this).children('div') ).attr('ID');
 			}
 		} else {}
-
-		optimalBuilding(hoveredspot);
-
 	}).mouseout(function () {
-		hideoptBuilding();
 		hoveredspot = '';
 	});;
-
-
-	// x button to close build menu
-	$('#xbselmenu').click(function () {
-		$('#selectabuildingmenu').hide();
-	});
 
 	// when a hotkey is pressed, if clickedspot or hoveredspot have values, then place the building on the map
 	$(document).keydown(function(e) {
@@ -103,6 +97,7 @@ $( document ).ready(function() {
 
 		else {}
 	});
+
 
 	// opening and closing the import/export window
 	$('#importmap').click(function () {
@@ -156,24 +151,103 @@ $( document ).ready(function() {
 
 });
 
+
+
+// check for bay spots, then place building
+function placeBuilding (clickedspot, buildtype) {
+
+	if ( $('#cityholder').hasClass('landlocked') && cityspots[clickedspot]['la'] == true ) {
+		$("#" + clickedspot)
+		.removeClass()
+		.removeAttr('data-building')
+		.addClass(buildtype)
+		.addClass('buildingmap')
+		.attr('data-building', buildtype);
+		cityspots[clickedspot]['buil'] = buildtype;
+	}
+	else if ( $('#cityholder').hasClass('waterside') && cityspots[clickedspot]['wa'] == true && cityspots[clickedspot]['ws'] == true ) { // bay spot in water city
+		if ( buildtype == 'port' || buildtype == 'shipyard' ) {
+			$("#" + clickedspot)
+			.removeClass()
+			.removeAttr('data-building')
+			.addClass(buildtype)
+			.addClass('buildingmap')
+			.attr('data-building', buildtype);
+			cityspots[clickedspot]['buil'] = buildtype;
+		} else {}
+	}
+	else if ( $('#cityholder').hasClass('waterside') && cityspots[clickedspot]['wa'] == true && cityspots[clickedspot]['ws'] == false ) { // regular spot in water city
+		if ( buildtype != 'port' && buildtype != 'shipyard' ) {
+			$("#" + clickedspot)
+			.removeClass()
+			.removeAttr('data-building')
+			.addClass(buildtype)
+			.addClass('buildingmap')
+			.attr('data-building', buildtype);
+			cityspots[clickedspot]['buil'] = buildtype;
+		}
+	}
+	updateResources();
+}
+
+// place the building on the map using the hotkeys
+function placeBuildingFromHotkey (clickedspot, e) {
+
+	var key = e.key;
+
+	// regular hotkeys
+	if(hotkeys.hasOwnProperty(key)) {
+		if ( !$("#" + clickedspot).hasClass('maplock') ) {
+			var matchingbuilding = hotkeys[key];
+			placeBuilding(clickedspot, matchingbuilding);
+		}
+		$('#selectabuildingmenu').hide();
+	}
+
+	// spacebar for lock
+	if (e.code == 'Space') {
+		e.preventDefault();
+		lockspot(clickedspot);
+		$('#selectabuildingmenu').hide();
+	} else {}
+
+	// remove building
+	if (e.code == 'Delete' || e.code == 'Backspace' || e.key == '0') {
+		if ( !$("#" + clickedspot).hasClass('maplock') ) {
+			$("#" + clickedspot).removeClass().removeAttr('data-building');
+			cityspots[clickedspot]['buil'] = '';
+			updateResources();
+		}
+	} else {}
+
+	$( $("#" + clickedspot).parent() ).removeClass('activetd');
+	clickedspot = '';
+}
+
+// place the building on the map using the left-hand menu
+function placeBuildingFromMenu (clickedspot, building) {
+	if ( !$("#" + clickedspot).hasClass('maplock') ) {
+		var buildtype = $( $(building).children('div') ).attr('ID');
+		placeBuilding(clickedspot, buildtype);
+	}
+	$( $("#" + clickedspot).parent() ).removeClass('activetd');
+	clickedspot = '';
+}
+
 // load info to res tab (initially, and when res tab button is clicked)
 function resTab () {
-
 	$('#resourcetabbutton').addClass('activebttn');
 	$('#militarytabbutton').removeClass('activebttn');
 	$('#restab').show();
 	$('#miltab').hide();
-	updateCityRes();
 }
 
 // load info to mil tab (when mil tab button is clicked)
 function milTab () {
-
 	$('#militarytabbutton').addClass('activebttn');
 	$('#resourcetabbutton').removeClass('activebttn');
 	$('#restab').hide();
 	$('#miltab').show();
-
 }
 
 // making the map strings in the import/export menu
@@ -278,45 +352,6 @@ function errorMessage (text) {
 	$('#errormessage').text(text);
 }
 
-// place the building on the map using the left-hand menu
-function placeBuildingFromMenu (clickedspot, building) {
-	var buildtype = $( $(building).children('div') ).attr('ID');
-	$("#" + clickedspot).removeClass().removeAttr('data-building').addClass(buildtype).addClass('buildingmap').attr('data-building', buildtype);
-	$( $("#" + clickedspot).parent() ).removeClass('activetd');
-	clickedspot = '';
-	updateCityRes();
-}
-
-// place the building on the map using the hotkeys
-function placeBuildingFromHotkey (clickedspot, e) {
-
-	var key = e.key;
-
-	// regular hotkeys
-	if(hotkeys.hasOwnProperty(key)) {
-		var matchingbuilding = hotkeys[key];
-		$("#" + clickedspot).removeClass().removeAttr('data-building').addClass(matchingbuilding).addClass('buildingmap').attr('data-building', matchingbuilding);
-		$('#selectabuildingmenu').hide();
-	}
-
-	// spacebar for lock
-	if (e.code == 'Space') {
-		e.preventDefault();
-		matchingbuilding = 'maplock';
-		$("#" + clickedspot).addClass(matchingbuilding).addClass('buildingmap').attr('data-building', matchingbuilding);
-		$('#selectabuildingmenu').hide();
-	} else {}
-
-	// remove building
-	if (e.code == 'Delete' || e.code == 'Backspace' || e.key == '0') {
-		$("#" + clickedspot).removeClass().removeAttr('data-building');
-	} else {}
-
-	$( $("#" + clickedspot).parent() ).removeClass('activetd');
-	clickedspot = '';
-	updateCityRes();
-}
-
 //changing map to landlocked
 function isLand () {
 	$('#cityholder').addClass('landlocked').removeClass('waterside');
@@ -331,5 +366,6 @@ function isWater () {
 	$('.wa').css("border","1px solid #414141");
 }
 
-
-
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
