@@ -105,7 +105,7 @@ function runCity () {
 	updateResources();
 }
 
-// populate res tab, and add lockedspots and processing-building y/n to main object. runs runOptimizer() at end.
+// populate res tab, and add lockedspots and processing-building y/n to main object.
 // runs at end of runCity(), and after a building is placed or removed.
 function updateResources () {
 	// init
@@ -558,7 +558,18 @@ function getEightNeighbours(thisdiv) {
 	var neighbour8 = "b" + (heightpos + 1) + "-" + (widthpos + 1);
 
 	var neighbours = [neighbour1, neighbour2, neighbour3, neighbour4, neighbour5, neighbour6, neighbour7, neighbour8];
-	return neighbours;
+	var finalneighbours = [];
+
+	var j;
+	for (j = 0; j < neighbours.length; j++) { 
+		var n = neighbours[j];
+		if ( $('#' + n).length > 0 ) {
+			if ( (cityspots[n]['la'] && $('#cityholder').hasClass('landlocked')) || (cityspots[n]['wa'] && $('#cityholder').hasClass('waterside')) ) {
+				finalneighbours.push(n); 
+			}
+		}
+	}
+	return finalneighbours;
 }
 
 // update farm fields
@@ -580,50 +591,226 @@ function updateFields (thediv) {
 	}
 }
 
+// update the optimization recommendation in the object
 function runOptimizer (spot) {
 	spot = spot || 0;
+
 	if (spot == 0) {
+
 		for (var mapspot in cityspots) {
-			var neighbours = getEightNeighbours(mapspot);
-			cityspots[mapspot]['optim'] = {};
-			cityspots[mapspot]['optim']['if-f'] = runForestersPseudo(neighbours);
-			cityspots[mapspot]['optim']['if-s'] = runStoneMinePseudo(neighbours);
-			cityspots[mapspot]['optim']['if-i'] = runIronMinePseudo(neighbours);
-			cityspots[mapspot]['optim']['if-a'] = runFarmPseudo(neighbours);
-			cityspots[mapspot]['optim']['if-l'] = runSawmillPseudo(neighbours);
-			cityspots[mapspot]['optim']['if-h'] = runMasonsPseudo(neighbours);
-			cityspots[mapspot]['optim']['if-z'] = runSmelterPseudo(neighbours);
-			cityspots[mapspot]['optim']['if-g'] = runGMillPseudo(neighbours);
-			cityspots[mapspot]['optim']['if-c'] = runCabinPseudo(neighbours);
-			cityspots[mapspot]['optim']['if-v'] = runVillaPseudo(neighbours);
-			cityspots[mapspot]['optim']['if-m'] = runForumPseudo(neighbours);
-			cityspots[mapspot]['optim']['if-o'] = runPortPseudo(neighbours);
+			if ( (cityspots[mapspot]['la'] && $('#cityholder').hasClass('landlocked')) || (cityspots[mapspot]['wa'] && $('#cityholder').hasClass('waterside')) ) {
+
+				var neighbours = getEightNeighbours(mapspot);
+				cityspots[mapspot]['optim'] = {};
+				cityspots[mapspot]['optim']['if-f'] = runForestersPseudo(neighbours);
+				cityspots[mapspot]['optim']['if-s'] = runStoneMinePseudo(neighbours);
+				cityspots[mapspot]['optim']['if-i'] = runIronMinePseudo(neighbours);
+				cityspots[mapspot]['optim']['if-a'] = runFarmPseudo(neighbours);
+				cityspots[mapspot]['optim']['if-l'] = runSawmillPseudo(neighbours);
+				cityspots[mapspot]['optim']['if-h'] = runMasonsPseudo(neighbours);
+				cityspots[mapspot]['optim']['if-z'] = runSmelterPseudo(neighbours);
+				cityspots[mapspot]['optim']['if-g'] = runGMillPseudo(neighbours);
+				cityspots[mapspot]['optim']['if-v'] = runVillaPseudo(neighbours);
+				cityspots[mapspot]['optim']['if-m'] = runForumPseudo(neighbours);
+				cityspots[mapspot]['optim']['if-o'] = runPortPseudo(neighbours);
+				var cabinbonuses = runCabinPseudo(neighbours);
+				cityspots[mapspot]['optim']['if-c'] = cabinbonuses[0];
+
+				// just cabins
+				if (cabinbonuses[0] > topoptimizations['cabin']['val']) {
+					topoptimizations['cabin']['val'] = cabinbonuses[0];
+					topoptimizations['cabin']['pos'] = mapspot;
+				}
+
+				// the other 5 res
+				if (cityspots[mapspot]['optim']['if-f'] > topoptimizations['wood']['val']) {
+					topoptimizations['wood']['val'] = cityspots[mapspot]['optim']['if-f'];
+					topoptimizations['wood']['buil'] = 'foresters';
+					topoptimizations['wood']['pos'] = mapspot;
+				}
+				if (cityspots[mapspot]['optim']['if-l'] > topoptimizations['wood']['val']) {
+					topoptimizations['wood']['val'] = cityspots[mapspot]['optim']['if-l'];
+					topoptimizations['wood']['buil'] = 'sawmill';
+					topoptimizations['wood']['pos'] = mapspot;
+				}
+				if (cabinbonuses[1] > topoptimizations['wood']['val']) {
+					topoptimizations['wood']['val'] = cabinbonuses[1];
+					topoptimizations['wood']['buil'] = 'cabin';
+					topoptimizations['wood']['pos'] = mapspot;
+				}
+
+				if (cityspots[mapspot]['optim']['if-s'] > topoptimizations['stone']['val']) {
+					topoptimizations['stone']['val'] = cityspots[mapspot]['optim']['if-s'];
+					topoptimizations['stone']['buil'] = 'stonemine';
+					topoptimizations['stone']['pos'] = mapspot;
+				}
+				if (cityspots[mapspot]['optim']['if-h'] > topoptimizations['stone']['val']) {
+					topoptimizations['stone']['val'] = cityspots[mapspot]['optim']['if-h'];
+					topoptimizations['stone']['buil'] = 'masons';
+					topoptimizations['stone']['pos'] = mapspot;
+				}
+				if (cabinbonuses[2] > topoptimizations['stone']['val']) {
+					topoptimizations['stone']['val'] = cabinbonuses[2];
+					topoptimizations['stone']['buil'] = 'cabin';
+					topoptimizations['stone']['pos'] = mapspot;
+				}
+
+				if (cityspots[mapspot]['optim']['if-i'] > topoptimizations['iron']['val']) {
+					topoptimizations['iron']['val'] = cityspots[mapspot]['optim']['if-i'];
+					topoptimizations['iron']['buil'] = 'ironmine';
+					topoptimizations['iron']['pos'] = mapspot;
+				}
+				if (cityspots[mapspot]['optim']['if-z'] > topoptimizations['iron']['val']) {
+					topoptimizations['iron']['val'] = cityspots[mapspot]['optim']['if-z'];
+					topoptimizations['iron']['buil'] = 'smelter';
+					topoptimizations['iron']['pos'] = mapspot;
+				}
+				if (cabinbonuses[3] > topoptimizations['iron']['val']) {
+					topoptimizations['iron']['val'] = cabinbonuses[3];
+					topoptimizations['iron']['buil'] = 'cabin';
+					topoptimizations['iron']['pos'] = mapspot;
+				}
+
+				if (cityspots[mapspot]['optim']['if-a'] > topoptimizations['food']['val']) {
+					topoptimizations['food']['val'] = cityspots[mapspot]['optim']['if-a'];
+					topoptimizations['food']['buil'] = 'farm';
+					topoptimizations['food']['pos'] = mapspot;
+				}
+				if (cityspots[mapspot]['optim']['if-g'] > topoptimizations['food']['val']) {
+					topoptimizations['food']['val'] = cityspots[mapspot]['optim']['if-g'];
+					topoptimizations['food']['buil'] = 'grainmill';
+					topoptimizations['food']['pos'] = mapspot;
+				}
+				if (cabinbonuses[4] > topoptimizations['food']['val']) {
+					topoptimizations['food']['val'] = cabinbonuses[4];
+					topoptimizations['food']['buil'] = 'cabin';
+					topoptimizations['food']['pos'] = mapspot;
+				}
+
+				if (cityspots[mapspot]['optim']['if-v'] > topoptimizations['gold']['val']) {
+					topoptimizations['gold']['val'] = cityspots[mapspot]['optim']['if-v'];
+					topoptimizations['gold']['buil'] = 'villa';
+					topoptimizations['gold']['pos'] = mapspot;
+				}
+				if (cityspots[mapspot]['optim']['if-m'] > topoptimizations['gold']['val']) {
+					topoptimizations['gold']['val'] = cityspots[mapspot]['optim']['if-m'];
+					topoptimizations['gold']['buil'] = 'forum';
+					topoptimizations['gold']['pos'] = mapspot;
+				}
+				if (cityspots[mapspot]['optim']['if-o'] > topoptimizations['gold']['val']) {
+					topoptimizations['gold']['val'] = cityspots[mapspot]['optim']['if-o'];
+					topoptimizations['gold']['buil'] = 'port';
+					topoptimizations['gold']['pos'] = mapspot;
+				}
+			}
 		}
 	}
 	else if (spot != 0) {
 
-		cityspots[spot]['optim'] = {};
+		if ( (cityspots[spot]['la'] && $('#cityholder').hasClass('landlocked')) || (cityspots[spot]['wa'] && $('#cityholder').hasClass('waterside')) ) {
 
-		var neighbours = getEightNeighbours(spot);
+			var neighbours = getEightNeighbours(spot);
 
-		var j;
-		for (j = 0; j < neighbours.length; j++) { 
-			var tcurrent = neighbours[j];
+			var j;
+			for (j = 0; j < neighbours.length; j++) { 
+				var tcurrent = neighbours[j];
 
-			var tneighbours = getEightNeighbours(tcurrent);
+				var tneighbours = getEightNeighbours(tcurrent);
 
-			cityspots[tcurrent]['optim']['if-f'] = runForestersPseudo(tneighbours);
-			cityspots[tcurrent]['optim']['if-s'] = runStoneMinePseudo(tneighbours);
-			cityspots[tcurrent]['optim']['if-i'] = runIronMinePseudo(tneighbours);
-			cityspots[tcurrent]['optim']['if-a'] = runFarmPseudo(tneighbours);
-			cityspots[tcurrent]['optim']['if-l'] = runSawmillPseudo(tneighbours);
-			cityspots[tcurrent]['optim']['if-h'] = runMasonsPseudo(tneighbours);
-			cityspots[tcurrent]['optim']['if-z'] = runSmelterPseudo(tneighbours);
-			cityspots[tcurrent]['optim']['if-g'] = runGMillPseudo(tneighbours);
-			cityspots[tcurrent]['optim']['if-c'] = runCabinPseudo(tneighbours);
-			cityspots[tcurrent]['optim']['if-v'] = runVillaPseudo(tneighbours);
-			cityspots[tcurrent]['optim']['if-m'] = runForumPseudo(tneighbours);
-			cityspots[tcurrent]['optim']['if-o'] = runPortPseudo(tneighbours);
+				cityspots[tcurrent]['optim']['if-f'] = runForestersPseudo(tneighbours);
+				cityspots[tcurrent]['optim']['if-s'] = runStoneMinePseudo(tneighbours);
+				cityspots[tcurrent]['optim']['if-i'] = runIronMinePseudo(tneighbours);
+				cityspots[tcurrent]['optim']['if-a'] = runFarmPseudo(tneighbours);
+				cityspots[tcurrent]['optim']['if-l'] = runSawmillPseudo(tneighbours);
+				cityspots[tcurrent]['optim']['if-h'] = runMasonsPseudo(tneighbours);
+				cityspots[tcurrent]['optim']['if-z'] = runSmelterPseudo(tneighbours);
+				cityspots[tcurrent]['optim']['if-g'] = runGMillPseudo(tneighbours);
+				cityspots[tcurrent]['optim']['if-v'] = runVillaPseudo(tneighbours);
+				cityspots[tcurrent]['optim']['if-m'] = runForumPseudo(tneighbours);
+				cityspots[tcurrent]['optim']['if-o'] = runPortPseudo(tneighbours);
+				var cabinbonuses = runCabinPseudo(tneighbours);
+				cityspots[tcurrent]['optim']['if-c'] = cabinbonuses[0];
+
+				if (cityspots[tcurrent]['optim']['if-f'] > topoptimizations['wood']['val']) {
+					topoptimizations['wood']['val'] = cityspots[tcurrent]['optim']['if-f'];
+					topoptimizations['wood']['buil'] = 'foresters';
+					topoptimizations['wood']['pos'] = tcurrent;
+				}
+				if (cityspots[tcurrent]['optim']['if-l'] > topoptimizations['wood']['val']) {
+					topoptimizations['wood']['val'] = cityspots[tcurrent]['optim']['if-f'];
+					topoptimizations['wood']['buil'] = 'sawmill';
+					topoptimizations['wood']['pos'] = tcurrent;
+				}
+				if (cabinbonuses[1] > topoptimizations['wood']['val']) {
+					topoptimizations['wood']['val'] = cabinbonuses[1];
+					topoptimizations['wood']['buil'] = 'cabin';
+					topoptimizations['wood']['pos'] = tcurrent;
+				}
+
+				if (cityspots[tcurrent]['optim']['if-s'] > topoptimizations['stone']['val']) {
+					topoptimizations['stone']['val'] = cityspots[tcurrent]['optim']['if-s'];
+					topoptimizations['stone']['buil'] = 'stonemine';
+					topoptimizations['stone']['pos'] = tcurrent;
+				}
+				if (cityspots[tcurrent]['optim']['if-h'] > topoptimizations['stone']['val']) {
+					topoptimizations['stone']['val'] = cityspots[tcurrent]['optim']['if-h'];
+					topoptimizations['stone']['buil'] = 'masons';
+					topoptimizations['stone']['pos'] = tcurrent;
+				}
+				if (cabinbonuses[2] > topoptimizations['stone']['val']) {
+					topoptimizations['stone']['val'] = cabinbonuses[2];
+					topoptimizations['stone']['buil'] = 'cabin';
+					topoptimizations['stone']['pos'] = tcurrent;
+				}
+
+				if (cityspots[tcurrent]['optim']['if-i'] > topoptimizations['iron']['val']) {
+					topoptimizations['iron']['val'] = cityspots[tcurrent]['optim']['if-i'];
+					topoptimizations['iron']['buil'] = 'ironmine';
+					topoptimizations['iron']['pos'] = tcurrent;
+				}
+				if (cityspots[tcurrent]['optim']['if-z'] > topoptimizations['iron']['val']) {
+					topoptimizations['iron']['val'] = cityspots[tcurrent]['optim']['if-z'];
+					topoptimizations['iron']['buil'] = 'smelter';
+					topoptimizations['iron']['pos'] = tcurrent;
+				}
+				if (cabinbonuses[3] > topoptimizations['iron']['val']) {
+					topoptimizations['iron']['val'] = cabinbonuses[3];
+					topoptimizations['iron']['buil'] = 'cabin';
+					topoptimizations['iron']['pos'] = tcurrent;
+				}
+
+				if (cityspots[tcurrent]['optim']['if-a'] > topoptimizations['food']['val']) {
+					topoptimizations['food']['val'] = cityspots[tcurrent]['optim']['if-a'];
+					topoptimizations['food']['buil'] = 'farm';
+					topoptimizations['food']['pos'] = tcurrent;
+				}
+				if (cityspots[tcurrent]['optim']['if-g'] > topoptimizations['food']['val']) {
+					topoptimizations['food']['val'] = cityspots[tcurrent]['optim']['if-g'];
+					topoptimizations['food']['buil'] = 'grainmill';
+					topoptimizations['food']['pos'] = tcurrent;
+				}
+				if (cabinbonuses[4] > topoptimizations['food']['val']) {
+					topoptimizations['food']['val'] = cabinbonuses[4];
+					topoptimizations['food']['buil'] = 'cabin';
+					topoptimizations['food']['pos'] = tcurrent;
+				}
+
+				if (cityspots[tcurrent]['optim']['if-v'] > topoptimizations['gold']['val']) {
+					topoptimizations['gold']['val'] = cityspots[tcurrent]['optim']['if-v'];
+					topoptimizations['gold']['buil'] = 'villa';
+					topoptimizations['gold']['pos'] = tcurrent;
+				}
+				if (cityspots[tcurrent]['optim']['if-m'] > topoptimizations['gold']['val']) {
+					topoptimizations['gold']['val'] = cityspots[tcurrent]['optim']['if-m'];
+					topoptimizations['gold']['buil'] = 'forum';
+					topoptimizations['gold']['pos'] = tcurrent;
+				}
+				if (cityspots[tcurrent]['optim']['if-o'] > topoptimizations['gold']['val']) {
+					topoptimizations['gold']['val'] = cityspots[tcurrent]['optim']['if-o'];
+					topoptimizations['gold']['buil'] = 'port';
+					topoptimizations['gold']['pos'] = tcurrent;
+				}
+			}
 		}
 	}
 }
@@ -904,7 +1091,10 @@ function runVillaPseudo (neighbours) {
 
 function runCabinPseudo (neighbours) {
 
-	var prodbuils = 0;
+	var prodforester = 0;
+	var prodstonemine = 0;
+	var prodironmine = 0;
+	var prodfarm = 0;
 
 	var j;
 	for (j = 0; j < neighbours.length; j++) { 
@@ -914,25 +1104,46 @@ function runCabinPseudo (neighbours) {
 			var tbuilding = cityspots[current]['buil'];
 
 			if (tbuilding == 'foresters') {
-				prodbuils += 1;
+				prodforester += 1;
 			}
 			else if (tbuilding == 'stonemine') {
-				prodbuils += 1;
+				prodstonemine += 1;
 			}
 			else if (tbuilding == 'ironmine') {
-				prodbuils += 1;
+				prodironmine += 1;
 			}
 			else if (tbuilding == 'farm') {
-				prodbuils += 1;
+				prodfarm += 1;
 			}
 		}
 	}
-	var toadd = buildingsobject['foresters']['stats']['woodproduction'];
-	var cabinbonus = ( toadd * ( buildingsobject['cabin']['stats']['cabinproductionbonus'] / 100 ) ) * prodbuils;
-	if (cabinbonus > 0) {
-		cabinbonus += toadd;
+
+	var initial = buildingsobject['foresters']['stats']['woodproduction'];
+	var foresterbonus = ( buildingsobject['foresters']['stats']['woodproduction'] * ( buildingsobject['cabin']['stats']['cabinproductionbonus'] / 100 ) ) * prodforester;
+	var stonebonus = ( buildingsobject['stonemine']['stats']['stoneproduction'] * ( buildingsobject['cabin']['stats']['cabinproductionbonus'] / 100 ) ) * prodstonemine;
+	var ironbonus = ( buildingsobject['ironmine']['stats']['ironproduction'] * ( buildingsobject['cabin']['stats']['cabinproductionbonus'] / 100 ) ) * prodironmine;
+	var foodbonus = ( buildingsobject['farm']['stats']['foodproduction'] * ( buildingsobject['cabin']['stats']['cabinproductionbonus'] / 100 ) ) * prodfarm;
+	
+	var tots = foresterbonus + stonebonus + ironbonus + foodbonus;
+	if (tots > 0) {
+		tots += initial;
 	}
-	return cabinbonus;
+
+	if (foresterbonus > 0) {
+		foresterbonus += initial;
+	}
+	if (stonebonus > 0) {
+		stonebonus += initial;
+	}
+	if (ironbonus > 0) {
+		ironbonus += initial;
+	}
+	if (foodbonus > 0) {
+		foodbonus += initial;
+	}
+
+	var finaltots = [tots, foresterbonus, stonebonus, ironbonus, foodbonus];
+	return finaltots;
 }
 
 function runForumPseudo (neighbours) {
