@@ -6,6 +6,7 @@ var buildingsobject = {
 		'loukey': '.',
 		'name': 'Forest Node',
 		'background': 'url("images/buildings/building_set_small.png") no-repeat -81px -54px',
+		'medbackground': 'url("images/buildings/building_set_medium.png") no-repeat -150px -100px',
 		'stats': {
 			'woodresnodebonus': 45
 		}
@@ -15,6 +16,7 @@ var buildingsobject = {
 		'loukey': ':',
 		'name': 'Stone Node',
 		'background': 'url("images/buildings/building_set_small.png") no-repeat 0 -54px',
+		'medbackground': 'url("images/buildings/building_set_medium.png") no-repeat 0 -100px',
 		'stats': {
 			'stoneresnodebonus': 45
 		}
@@ -24,6 +26,7 @@ var buildingsobject = {
 		'loukey': ',',
 		'name': 'Iron Node',
 		'background': 'url("images/buildings/building_set_small.png") no-repeat -81px -513px',
+		'medbackground': 'url("images/buildings/building_set_medium.png") no-repeat -150px -950px',
 		'stats': {
 			'ironresnodebonus': 45
 		}
@@ -33,6 +36,7 @@ var buildingsobject = {
 		'loukey': ';',
 		'name': 'Lake Node',
 		'background': 'url("images/buildings/building_set_small.png") no-repeat -54px -54px',
+		'medbackground': 'url("images/buildings/building_set_medium.png") no-repeat -100px -100px',
 		'stats': {
 			'foodresnodebonus': 45
 		}
@@ -42,6 +46,7 @@ var buildingsobject = {
 		'loukey': 'r',
 		'name': 'Port',
 		'background': 'url("images/buildings/building_set_small.png") no-repeat -54px -297px',
+		'medbackground': 'url("images/buildings/building_set_medium.png") no-repeat -100px -550px',
 		'stats': {
 			'tradeships': 30,
 			'goldtaxbonus': 50
@@ -52,6 +57,7 @@ var buildingsobject = {
 		'loukey': '2',
 		'name': 'Foresters Hut',
 		'background': 'url("images/buildings/building_set_small.png") no-repeat -27px -27px',
+		'medbackground': 'url("images/buildings/building_set_medium.png") no-repeat -50px -50px',
 		'stats': {
 			'woodproduction': 300
 		}
@@ -61,6 +67,7 @@ var buildingsobject = {
 		'loukey': '3',
 		'name': 'Stone Mine',
 		'background': 'url("images/buildings/building_set_small.png") no-repeat -81px -27px',
+		'medbackground': 'url("images/buildings/building_set_medium.png") no-repeat -150px -50px',
 		'stats': {
 			'stoneproduction': 300
 		}
@@ -70,6 +77,7 @@ var buildingsobject = {
 		'loukey': '4',
 		'name': 'Iron Mine',
 		'background': 'url("images/buildings/building_set_small.png") no-repeat -54px -135px',
+		'medbackground': 'url("images/buildings/building_set_medium.png") no-repeat -100px -250px',
 		'stats': {
 			'ironproduction': 300
 		}
@@ -79,6 +87,7 @@ var buildingsobject = {
 		'loukey': '1',
 		'name': 'Farm Estate',
 		'background': 'url("images/buildings/building_set_small.png") no-repeat 0 -27px',
+		'medbackground': 'url("images/buildings/building_set_medium.png") no-repeat 0 -50px',
 		'stats': {
 			'foodproduction': 300
 		}
@@ -88,6 +97,7 @@ var buildingsobject = {
 		'loukey': 'u',
 		'name': 'Villa',
 		'background': 'url("images/buildings/building_set_small.png") no-repeat -54px -243px',
+		'medbackground': 'url("images/buildings/building_set_medium.png") no-repeat -100px -450px',
 		'stats': {
 			'goldproduction': 400
 		}
@@ -97,6 +107,7 @@ var buildingsobject = {
 		'loukey': 'l',
 		'name': 'Sawmill',
 		'background': 'url("images/buildings/building_set_small.png") no-repeat -27px -108px',
+		'medbackground': 'url("images/buildings/building_set_medium.png") no-repeat -50px -200px',
 		'stats': {
 			'woodprocessingbonus': 75,
 			'woodstoragebonus': 200
@@ -107,6 +118,7 @@ var buildingsobject = {
 		'loukey': 'a',
 		'name': 'Masons Hut',
 		'background': 'url("images/buildings/building_set_small.png") no-repeat -81px -108px',
+		'medbackground': 'url("images/buildings/building_set_medium.png") no-repeat -150px -200px',
 		'stats': {
 			'stoneprocessingbonus': 75,
 			'stonestoragebonus': 200
@@ -117,6 +129,7 @@ var buildingsobject = {
 		'loukey': 'd',
 		'name': 'Smelter',
 		'background': 'url("images/buildings/building_set_small.png") no-repeat -54px -216px',
+		'medbackground': 'url("images/buildings/building_set_medium.png") no-repeat -100px -400px',
 		'stats': {
 			'ironprocessingbonus': 75,
 			'ironstoragebonus': 200
@@ -127,6 +140,7 @@ var buildingsobject = {
 		'loukey': 'm',
 		'name': 'Grain Mill',
 		'background': 'url("images/buildings/building_set_small.png") no-repeat 0 -135px',
+		'medbackground': 'url("images/buildings/building_set_medium.png") no-repeat 0 -250px',
 		'stats': {
 			'foodprocessingbonus': 75,
 			'foodstoragebonus': 200
@@ -137,6 +151,7 @@ var buildingsobject = {
 		'loukey': 'p',
 		'name': 'Forum',
 		'background': 'url("images/buildings/building_set_small.png") no-repeat -54px -27px',
+		'medbackground': 'url("images/buildings/building_set_medium.png") no-repeat -100px -50px',
 		'stats': {
 			'tradecarts': 200,
 			'goldtaxbonus': 20
@@ -147,6 +162,7 @@ var buildingsobject = {
 		'loukey': 's',
 		'name': 'Storehouse',
 		'background': 'url("images/buildings/building_set_small.png") no-repeat -27px -135px',
+		'medbackground': 'url("images/buildings/building_set_medium.png") no-repeat -50px -250px',
 		'stats': {
 			'storage': 200000
 		}
@@ -156,6 +172,7 @@ var buildingsobject = {
 		'loukey': 'h',
 		'name': 'Hideaway',
 		'background': 'url("images/buildings/building_set_small.png") no-repeat 0 -243px',
+		'medbackground': 'url("images/buildings/building_set_medium.png") no-repeat 0 -450px',
 		'stats': {
 			'reshidden': 15000
 		}
@@ -165,6 +182,7 @@ var buildingsobject = {
 		'loukey': 'c',
 		'name': 'Cabin',
 		'background': 'url("images/buildings/building_set_small.png") no-repeat -81px 0',
+		'medbackground': 'url("images/buildings/building_set_medium.png") no-repeat -150px 0',
 		'stats': {
 			'constructspeed': 100,
 			'cabinproductionbonus': 30
@@ -175,6 +193,7 @@ var buildingsobject = {
 		'loukey': 'b',
 		'name': 'Barracks',
 		'background': 'url("images/buildings/building_set_small.png") no-repeat -54px 0',
+		'medbackground': 'url("images/buildings/building_set_medium.png") no-repeat -100px 0',
 		'stats': {
 			'armysize': 1000,
 			'enlistmentspeedbonus': 25
@@ -185,6 +204,7 @@ var buildingsobject = {
 		'loukey': 'k',
 		'name': 'Guardhouse',
 		'background': 'url("images/buildings/building_set_small.png") no-repeat -27px -405px',
+		'medbackground': 'url("images/buildings/building_set_medium.png") no-repeat -50px -750px',
 		'stats': {
 			'guardenlistmentspeed': 150
 		}
@@ -194,6 +214,7 @@ var buildingsobject = {
 		'loukey': 'g',
 		'name': 'Training Arena',
 		'background': 'url("images/buildings/building_set_small.png") no-repeat 0 -270px',
+		'medbackground': 'url("images/buildings/building_set_medium.png") no-repeat 0 -500px',
 		'stats': {
 			'infenlistmentspeed': 150
 		}
@@ -203,6 +224,7 @@ var buildingsobject = {
 		'loukey': 'z',
 		'name': 'Academy',
 		'background': 'url("images/buildings/building_set_small.png") no-repeat -81px -243px',
+		'medbackground': 'url("images/buildings/building_set_medium.png") no-repeat -150px -450px',
 		'stats': {
 			'sacredenlistmentspeed': 150
 		}
@@ -212,6 +234,7 @@ var buildingsobject = {
 		'loukey': 'x',
 		'name': 'Castle',
 		'background': 'url("images/buildings/building_set_small.png") no-repeat 0 -162px',
+		'medbackground': 'url("images/buildings/building_set_medium.png") no-repeat 0 -300px',
 		'stats': {
 			'armysizeexpon': 300
 		}
@@ -221,6 +244,7 @@ var buildingsobject = {
 		'loukey': 'v',
 		'name': 'Shipyard',
 		'background': 'url("images/buildings/building_set_small.png") no-repeat 0 -324px',
+		'medbackground': 'url("images/buildings/building_set_medium.png") no-repeat 0 -600px',
 		'stats': {
 			'navyenlistmentspeed': 150
 		}
@@ -230,6 +254,7 @@ var buildingsobject = {
 		'loukey': 'e',
 		'name': 'Stable',
 		'background': 'url("images/buildings/building_set_small.png") no-repeat -81px -135px',
+		'medbackground': 'url("images/buildings/building_set_medium.png") no-repeat -150px -250px',
 		'stats': {
 			'cavenlistmentspeed': 150
 		}
@@ -239,6 +264,7 @@ var buildingsobject = {
 		'loukey': 'y',
 		'name': 'Blacksmith',
 		'background': 'url("images/buildings/building_set_small.png") no-repeat -81px -378px',
+		'medbackground': 'url("images/buildings/building_set_medium.png") no-repeat -150px -700px',
 		'stats': {
 			'artienlistmentspeed': 150
 		}
@@ -248,6 +274,7 @@ var buildingsobject = {
 		'loukey': 'j',
 		'name': 'Sorcerers Tower',
 		'background': 'url("images/buildings/building_set_small.png") no-repeat -27px -378px',
+		'medbackground': 'url("images/buildings/building_set_medium.png") no-repeat -50px -700px',
 		'stats': {
 			'mysticenlistmentspeed': 150
 		}

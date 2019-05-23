@@ -658,6 +658,72 @@ button:focus {
 	margin-right: 5px;
 }
 
+#spothovermenu {
+	display: none;
+	height: 100%;
+	width: 100%;
+	color: white;
+	font-size: 12px;
+}
+
+.spothovline {
+	text-align: center;
+	line-height: 30px;
+	margin-top: 5px;
+}
+
+.optimalbuildingmain {
+	margin-top: 5px;
+	width: 60%;
+	margin: auto;
+}
+
+.spothovertable {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.spothovertable td {
+	width: 25%;
+	text-align: center;
+	height: 18px;
+	font-size: 11px;
+}
+
+#optimalbuillarge {
+	height: 50px;
+	width: 50px;
+	margin: 15px auto 20px auto;
+}
+
+#currbuilimg div, #optimbuilimg div {
+	margin: 7px auto;
+	height: 27px;
+	width: 27px;
+}
+
+#optimalbuilname {
+	text-align: center;
+}
+
+.optimicon {
+	margin: auto;
+	height: 24px;
+	width: 24px;
+	background: url('images/icons/star.png');
+	background-size: 100% 100%;
+}
+
+.spothovertable {
+	color: #999999;
+}
+
+.w, .white {
+	color: #fff;
+}
+
+
+
 
 
 

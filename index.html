@@ -264,7 +264,75 @@
 				</table>
 			</div>
 
-			<div ID = "spothovermenu" style="display: none;">
+			<div ID = "spothovermenu">
+				<p class = "spothovline">Optimal building for this spot:</p>
+				<table class = "optimalbuildingmain">
+					<tr>
+						<td rowspan="2">
+							<div class = "optimicon"></div>
+						</td>
+						<td ID = "optimalbuilname"></td>
+					</tr>
+					<tr>
+						<td>
+							<div ID = "optimalbuillarge"></div>
+						</td>
+					</tr>
+				</table>
+				<table class = "spothovertable">
+					<tr>
+						<td></td>
+						<td class = "w">Current</td>
+						<td class = "w">Optimal</td>
+						<td class = "w">Total</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td ID = "currbuilimg">
+							<div></div>
+						</td>
+						<td ID = "optimbuilimg">
+							<div></div>
+						</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td class = "w">Wood</td>
+						<td ID = "currbuilwood"></td>
+						<td ID = "optimbuilwood"></td>
+						<td ID = "totdiffwood"></td>
+					</tr>
+					<tr>
+						<td class = "w">Stone</td>
+						<td ID = "currbuilstone"></td>
+						<td ID = "optimbuilstone"></td>
+						<td ID = "totdiffstone"></td>
+					</tr>
+					<tr>
+						<td class = "w">Iron</td>
+						<td ID = "currbuiliron"></td>
+						<td ID = "optimbuiliron"></td>
+						<td ID = "totdiffiron"></td>
+					</tr>
+					<tr>
+						<td class = "w">Food</td>
+						<td ID = "currbuilfood"></td>
+						<td ID = "optimbuilfood"></td>
+						<td ID = "totdifffood"></td>
+					</tr>
+					<tr>
+						<td class = "w">Gold</td>
+						<td ID = "currbuilgold"></td>
+						<td ID = "optimbuilgold"></td>
+						<td ID = "totdiffgold"></td>
+					</tr>
+					<tr>
+						<td class = "w">Total</td>
+						<td ID = "currbuiltotal"></td>
+						<td ID = "optimbuiltotal"></td>
+						<td ID = "totresdiff"></td>
+					</tr>
+				</table>
 				
 				
 			</div>
@@ -852,10 +920,10 @@
 				</tr>
 				<tr>
 					<td class = "mtt">
-						<button ID = "addabuilding" class = "midbutton mid bttbluebuttons">Add A Building</button>
+						<button ID = "addabuilding" class = "midbutton mid bttbluebuttons" onclick="addABuilding();">Add A Building</button>
 					</td>
 					<td class = "mtt">
-						<button ID = "addacabin" class = "midbutton mid bttbluebuttons">Add Cabin</button>
+						<button ID = "addacabin" class = "midbutton mid bttbluebuttons" onclick="addACabin();">Add Cabin</button>
 					</td>
 					<td class = "endrow">
 						<span class = "cabinpic"></span> <span ID = "numberbuildings">0</span>
@@ -863,10 +931,10 @@
 				</tr>
 				<tr>
 					<td class = "mtt">
-						<button ID = "removeabuilding" class = "midbutton mid bttbluebuttons">Remove A Building</button>
+						<button ID = "removeabuilding" class = "midbutton mid bttbluebuttons" onclick="removeABuilding();">Remove A Building</button>
 					</td>
 					<td class = "mtt">
-						<button ID = "removeacabin" class = "midbutton mid bttbluebuttons">Remove Cabin</button>
+						<button ID = "removeacabin" class = "midbutton mid bttbluebuttons" onclick="removeACabin();">Remove Cabin</button>
 					</td>
 					<td class = "endrow">
 						<span class = "barrackspic"></span> <span ID = "armysize">-</span>
@@ -879,7 +947,7 @@
 				</tr>
 				<tr>
 					<td class = "mtt">
-						<button ID = "lockbuildings" class = "midbutton mid bttbluebuttons">Lock All Buildings</button>
+						<button ID = "lockbuildings" class = "midbutton mid bttbluebuttons" onclick="lockAllBuildings();">Lock All Buildings</button>
 					</td>
 					<td class = "mtt">
 						<button ID = "undoaction" class = "midbutton mid bttbluebuttons">Undo</button>
@@ -890,7 +958,7 @@
 				</tr>
 				<tr>
 					<td class = "mtt">
-						<button ID = "lockresources" class = "midbutton mid bttbluebuttons">Lock All Resources</button>
+						<button ID = "lockresources" class = "midbutton mid bttbluebuttons" onclick="lockAllResources();">Lock All Resources</button>
 					</td>
 					<td class = "mtt">
 						<button ID = "redoaction" class = "midbutton mid bttbluebuttons">Redo</button>
@@ -901,7 +969,7 @@
 				</tr>
 				<tr>
 					<td class = "mtt">
-						<button ID = "unlockall" class = "smallerbutton mid bttbluebuttons">Unlock All</button>
+						<button ID = "unlockall" class = "smallerbutton mid bttbluebuttons" onclick="unlockAll();">Unlock All</button>
 					</td>
 					<td class = "mtt">
 						<button ID = "resetmap" class = "smallerbutton mid bttbluebuttons">Reset Map</button>
@@ -923,7 +991,6 @@
 	<script src="mainfunctions.js"></script>
 	<script src="citycalcs.js"></script>
 	<script src="buildingsobject.js"></script>
-	<script src="optimobject.js"></script>
 	
 </body>
 </html>

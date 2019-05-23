@@ -4,6 +4,8 @@ var hoveredspot = "";
 
 // generated object of all map spots
 var cityspots = {};
+// catalogue of best optimizations
+var topoptimizations = {};
 
 
 $( document ).ready(function() {
@@ -37,16 +39,20 @@ $( document ).ready(function() {
 	$('#cityholder td').mouseover(function () {
 		if ( $('#cityholder').hasClass('landlocked') && $(this).hasClass('la') ) {
 			$(this).css("background-color","rgba(246,221,149,0.2)");
+			showOptimization( $(this).children('div').attr('ID') );
 		}
 		if ( $('#cityholder').hasClass('waterside') && $(this).hasClass('wa') ) {
 			$(this).css("background-color","rgba(246,221,149,0.2)");
+			showOptimization( $(this).children('div').attr('ID') );
 		}
 	}).mouseout(function () {
 			$(this).css("background-color","transparent");
+			hideOptimization();
 	});
 
 	// updating clickedspot, and opening build menu, on click
 	$('#cityholder td').click(function () {
+		hideOptimization();
 		$('td.activetd').removeClass('activetd');
 		if ( $('#cityholder').hasClass('landlocked') && $(this).hasClass('la') ) {
 			clickedspot = $( $(this).children('div') ).attr('ID');
@@ -188,8 +194,9 @@ function placeBuilding (clickedspot, buildtype) {
 			cityspots[clickedspot]['buil'] = buildtype;
 		}
 	}
+	$('#selectabuildingmenu').hide();
 	updateResources();
-	runOptimizer(clickedspot);
+	runOptimizer();
 }
 
 // place the building on the map using the hotkeys
@@ -219,7 +226,7 @@ function placeBuildingFromHotkey (clickedspot, e) {
 			$("#" + clickedspot).removeClass().removeAttr('data-building');
 			cityspots[clickedspot]['buil'] = '';
 			updateResources();
-			runOptimizer(clickedspot);
+			runOptimizer();
 		}
 	} else {}
 
@@ -258,6 +265,20 @@ function lockspot (clickedspot) {
 	}
 }
 
+// lock a spot from lockAllBuildings() with no unlock check
+function lockspotn (clickedspot) {
+
+	cityspots[clickedspot]['lck'] = true;
+	var locked = 'maplock';
+	var lockcss = 'url(images/icons/locksmall.png) no-repeat';
+
+	var currbuilding = $("#" + clickedspot).attr('data-building');
+	var background = buildingsobject[currbuilding]['background'];
+	var newbackground = lockcss + "," + background;
+	$("#" + clickedspot).css('background', newbackground);
+	$("#" + clickedspot).addClass(locked).attr('data-lock', locked);
+}
+
 // unlock the spot/building again with spacebar
 function unlockspot (clickedspot) {
 	cityspots[clickedspot]['lck'] = false;
@@ -272,6 +293,37 @@ function unlockspot (clickedspot) {
 	} else {
 		$("#" + clickedspot).css('background', '');
 		$("#" + clickedspot).removeClass(locked).removeAttr('data-lock');
+	}
+}
+
+function lockAllBuildings () {
+
+	for (var divID in cityspots) {
+		if  ( cityspots[divID]['buil'].length > 0) { 
+			if (cityspots[divID]['buil'] != 'forest' && cityspots[divID]['buil'] != 'stone' && cityspots[divID]['buil'] != 'iron' && cityspots[divID]['buil'] != 'lake') {
+				lockspotn(divID);
+			}
+		}
+	}
+}
+
+function lockAllResources () {
+
+	for (var divID in cityspots) {
+		if  ( cityspots[divID]['buil'].length > 0) { 
+			if (cityspots[divID]['buil'] == 'forest' || cityspots[divID]['buil'] == 'stone' || cityspots[divID]['buil'] == 'iron' || cityspots[divID]['buil'] == 'lake') {
+				lockspotn(divID);
+			}
+		}
+	}
+}
+
+function unlockAll () {
+
+	for (var divID in cityspots) {
+		if (cityspots[divID]['lck'] == true) {
+			unlockspot(divID);
+		}
 	}
 }
 
