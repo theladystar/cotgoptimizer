@@ -6,6 +6,9 @@ var hoveredspot = "";
 var cityspots = {};
 // catalogue of best optimizations
 var topoptimizations = {};
+// catalogue of actions taken during session, and global variable to keep track of place in object
+var actions = {};
+var actionpos = 1;
 
 
 $( document ).ready(function() {
@@ -108,8 +111,7 @@ $( document ).ready(function() {
 
 	// opening and closing the import/export window
 	$('#importmap').click(function () {
-		loadMapStrings();
-		$('#cotgsharestringb').addClass('activebttn');
+		createMapString();
 		$('#importexportwindow').show();
 	});
 	$('#impexpclose').click(function () {
@@ -123,24 +125,6 @@ $( document ).ready(function() {
 	});
 
 
-	// changing sharestring tabs
-	$('#cotgsharestringb').click(function () {
-		$('#cotgsharestringb').addClass('activebttn');
-		$('#lousharestringb').removeClass('activebttn');
-		$('#sharestringinputlou').hide();
-		$('#sharestringinputcotg').show();
-		$('#loadloustringbutton').hide();
-		$('#loadcotgstringbutton').show();
-	});
-	$('#lousharestringb').click(function () {
-		$('#cotgsharestringb').removeClass('activebttn');
-		$('#lousharestringb').addClass('activebttn');
-		$('#sharestringinputcotg').hide();
-		$('#sharestringinputlou').show();
-		$('#loadcotgstringbutton').hide();
-		$('#loadloustringbutton').show();
-	});
-
 	//switching between res tab and mil tab
 	$('#resourcetabbutton').click(function () {
 		resTab();
@@ -150,9 +134,9 @@ $( document ).ready(function() {
 	});
 
 
-	$('#loadcotgstringbutton').click(function () {
-		var thesharestring = $('#sharestringinputcotg').val();
-		loadCotGSharestring(thesharestring);
+	$('#loadstringbutton').click(function () {
+		var thesharestring = $('#sharestringinput').val();
+		loadSharestring(thesharestring);
 	});
 
 
@@ -171,6 +155,7 @@ function placeBuilding (clickedspot, buildtype) {
 		.addClass('buildingmap')
 		.attr('data-building', buildtype);
 		cityspots[clickedspot]['buil'] = buildtype;
+		addToActions(clickedspot, buildtype, 'add');
 	}
 	else if ( $('#cityholder').hasClass('waterside') && cityspots[clickedspot]['wa'] == true && cityspots[clickedspot]['ws'] == true ) { // bay spot in water city
 		if ( buildtype == 'port' || buildtype == 'shipyard' ) {
@@ -181,6 +166,7 @@ function placeBuilding (clickedspot, buildtype) {
 			.addClass('buildingmap')
 			.attr('data-building', buildtype);
 			cityspots[clickedspot]['buil'] = buildtype;
+			addToActions(clickedspot, buildtype, 'add');
 		} else {}
 	}
 	else if ( $('#cityholder').hasClass('waterside') && cityspots[clickedspot]['wa'] == true && cityspots[clickedspot]['ws'] == false ) { // regular spot in water city
@@ -192,9 +178,23 @@ function placeBuilding (clickedspot, buildtype) {
 			.addClass('buildingmap')
 			.attr('data-building', buildtype);
 			cityspots[clickedspot]['buil'] = buildtype;
+			addToActions(clickedspot, buildtype, 'add');
 		}
 	}
 	$('#selectabuildingmenu').hide();
+	updateResources();
+	runOptimizer();
+}
+
+// check for bay spots, then place building
+function placeBuildingn (clickedspot, buildtype) {
+	$("#" + clickedspot)
+	.removeClass()
+	.removeAttr('data-building')
+	.addClass(buildtype)
+	.addClass('buildingmap')
+	.attr('data-building', buildtype);
+	cityspots[clickedspot]['buil'] = buildtype;
 	updateResources();
 	runOptimizer();
 }
@@ -244,6 +244,102 @@ function placeBuildingFromMenu (clickedspot, building) {
 	clickedspot = '';
 }
 
+// add an action to catalogue of actions taken during session
+function addToActions (clickedspot, buildtype, add) {
+
+	var number = 1;
+	for (var num in actions) {
+		number++;
+	}
+
+	if ( (actionpos + 1) < number) {
+
+		for (var numb in actions) {
+			if (numb > actionpos) {
+				delete actions[numb];
+			}
+		}
+
+		var newnumber = 1;
+		for (var numm in actions) {
+			newnumber++;
+		}
+		actionpos = newnumber;
+		number = newnumber;
+
+	} else {
+		actionpos = number;
+	}
+
+	if ( add == 'add' ) {
+		actions[number] = {
+			'buil': buildtype,
+			'pos': clickedspot,
+			'add': 'y'
+		}
+	}
+	else if ( add == 'del' ) {
+		actions[number] = {
+			'buil': buildtype,
+			'pos': clickedspot,
+			'add': 'n'
+		}
+	}
+}
+
+function undoAction () {
+
+	if (actionpos <= 0) {
+		actionpos = 0;
+	}
+	else {
+		var clickedspot = actions[actionpos]['pos'];
+		var build = actions[actionpos]['buil'];
+
+		if (actions[actionpos]['add'] == 'y') {
+			$("#" + clickedspot).removeClass().removeAttr('data-building');
+			cityspots[clickedspot]['buil'] = '';
+			updateResources();
+			runOptimizer();
+		}
+		else if (actions[actionpos]['add'] == 'n') {
+			placeBuildingn(clickedspot, build);
+		}
+	}
+	actionpos = actionpos - 1;
+}
+
+function redoAction () {
+	actionpos = actionpos + 1;
+
+	var number = 0;
+	for (var num in actions) {
+		number++;
+	}
+
+	if (actionpos > number) {
+		actionpos = number;
+	}
+	else {
+		var clickedspot = actions[actionpos]['pos'];
+		var build = actions[actionpos]['buil'];
+
+		if (actions[actionpos]['add'] == 'y') {
+			placeBuildingn(clickedspot, build);
+		}
+		else if (actions[actionpos]['add'] == 'n') {
+			$("#" + clickedspot).removeClass().removeAttr('data-building');
+			cityspots[clickedspot]['buil'] = '';
+			updateResources();
+			runOptimizer();
+		}
+	}
+}
+
+function resetMap () {
+	
+}
+
 // lock a spot/building with spacebar
 function lockspot (clickedspot) {
 	cityspots[clickedspot]['lck'] = true;
@@ -263,6 +359,8 @@ function lockspot (clickedspot) {
 		$("#" + clickedspot).css('background', lockcss);
 		$("#" + clickedspot).addClass(locked).attr('data-lock', locked);
 	}
+	updateResources();
+	runOptimizer();
 }
 
 // lock a spot from lockAllBuildings() with no unlock check
@@ -272,28 +370,34 @@ function lockspotn (clickedspot) {
 	var locked = 'maplock';
 	var lockcss = 'url(images/icons/locksmall.png) no-repeat';
 
-	var currbuilding = $("#" + clickedspot).attr('data-building');
-	var background = buildingsobject[currbuilding]['background'];
-	var newbackground = lockcss + "," + background;
-	$("#" + clickedspot).css('background', newbackground);
-	$("#" + clickedspot).addClass(locked).attr('data-lock', locked);
+	if ( $("#" + clickedspot).hasClass('buildingmap') ) {
+		var currbuilding = $("#" + clickedspot).attr('data-building');
+		var background = buildingsobject[currbuilding]['background'];
+		var newbackground = lockcss + "," + background;
+		$("#" + clickedspot).css('background', newbackground);
+		$("#" + clickedspot).addClass(locked).attr('data-lock', locked);
+	} else {
+		$("#" + clickedspot).css('background', lockcss);
+		$("#" + clickedspot).addClass(locked).attr('data-lock', locked);
+	}
 }
 
 // unlock the spot/building again with spacebar
 function unlockspot (clickedspot) {
 	cityspots[clickedspot]['lck'] = false;
 	var locked = 'maplock';
+	$("#" + clickedspot).css('background', '');
+	$("#" + clickedspot).removeClass(locked).removeAttr('data-lock');
+	updateResources();
+	runOptimizer();
+}
 
-	if ( $("#" + clickedspot).hasClass('buildingmap') ) {
-		var currbuilding = $("#" + clickedspot).attr('data-building');
-		var background = buildingsobject[currbuilding]['background'];
-		$("#" + clickedspot).css('background', '');
-		$("#" + clickedspot).css('background', background);
-		$("#" + clickedspot).removeClass(locked).removeAttr('data-lock');
-	} else {
-		$("#" + clickedspot).css('background', '');
-		$("#" + clickedspot).removeClass(locked).removeAttr('data-lock');
-	}
+// unlock a spot from unlockAllBuildings()
+function unlockspotn (clickedspot) {
+	cityspots[clickedspot]['lck'] = false;
+	var locked = 'maplock';
+	$("#" + clickedspot).css('background', '');
+	$("#" + clickedspot).removeClass(locked).removeAttr('data-lock');
 }
 
 function lockAllBuildings () {
@@ -305,6 +409,8 @@ function lockAllBuildings () {
 			}
 		}
 	}
+	updateResources();
+	runOptimizer();
 }
 
 function lockAllResources () {
@@ -316,15 +422,19 @@ function lockAllResources () {
 			}
 		}
 	}
+	updateResources();
+	runOptimizer();
 }
 
 function unlockAll () {
 
 	for (var divID in cityspots) {
 		if (cityspots[divID]['lck'] == true) {
-			unlockspot(divID);
+			unlockspotn(divID);
 		}
 	}
+	updateResources();
+	runOptimizer();
 }
 
 // load info to res tab (initially, and when res tab button is clicked)
@@ -344,9 +454,9 @@ function milTab () {
 }
 
 // making the map strings in the import/export menu
-function loadMapStrings () {
+function createMapString () {
 	$('#inpexplonglink').val('');
-	$('#sharestringinputcotg').val('');
+	$('#sharestringinput').val('');
 
 	var longmaplink = "http://cotgoptimizer.com/?map=";
 	var sharestringtext = "[ShareString.1.3]";
@@ -363,13 +473,13 @@ function loadMapStrings () {
 
 		if  ( cityspots[divID]['buil'].length > 0) { // regular buildings
 			var building = cityspots[divID]['buil'];
-			var finalkey = buildingsobject[building]['key'].toUpperCase();
+			var finalkey = buildingsobject[building]['loukey'].toUpperCase();
 			longmaplink += finalkey;
 			sharestringtext += finalkey;
 		}
 		else if (divID == "b11-11") { // basilica
-			longmaplink += "D";
-			sharestringtext += "D";
+			longmaplink += "T";
+			sharestringtext += "T";
 		}
 		else if ( cityspots[divID]['ws'] && $('#cityholder').hasClass('waterside')) { // open special spots (waterside)
 			sharestringtext += "_";
@@ -392,55 +502,117 @@ function loadMapStrings () {
 	sharestringtext += "[/ShareString]";
 
 	$('#inpexplonglink').val(longmaplink);
-	$('#sharestringinputcotg').val(sharestringtext);
+	$('#inpexpshortlink').val('');
+	$('#sharestringinput').val(sharestringtext);
 }
 
 // loading in an external cotg sharestring
-function loadCotGSharestring (string) {
-	var removest = string.replace('[ShareString.1.3]','').replace('[/ShareString]','');
-	var watercheck = removest.substring(0, 1);
-	var finalstring = removest.replace(':','').replace(';','');
+function loadSharestring (string) {
 
-	if (finalstring.length == Object.keys(cityspots).length) {
+	var stringcheck = string.substring(0, 17);
 
-		if (watercheck == ";") {
-			isWater();
-		}
-		else if (watercheck == ":") {
-			isLand();
-		}
-		else {
-			errorMessage("Invalid ShareString");
-		}
+	if (stringcheck == '[ShareString.1.3]') { // hexists sharestrings
+		var removest = string.replace('[ShareString.1.3]','').replace('[/ShareString]','');
+		var watercheck = removest.substring(0, 1);
+		var finalstring = removest.substring(1, 465); // remove water indicator
+		finalstring = finalstring.replace(' ','');  // removing spaces
+		finalstring = finalstring.replace(/(\r\n|\n|\r)/gm, ""); // removing linebreaks
 
-		var i = 0;
-		for (var divID in cityspots) { 
-			var building = finalstring[i];
-			i++;
 
-			if (building == "-") {} 
-			else if (building == "#") {}
-			else if (building == "_") {}
-			else if (building == "D") {} //basilica
-			else {					     // normal buildings
-				var buildkey = building.toLowerCase();
-				if (hotkeys.hasOwnProperty(buildkey)) {
-					var matchingbuilding = hotkeys[buildkey];
-					$('#' + divID)
-					.removeClass()
-					.removeAttr('data-building')
-					.addClass(matchingbuilding)
-					.addClass('buildingmap')
-					.attr('data-building', matchingbuilding);
-					cityspots[divID]['buil'] = matchingbuilding;
+		if (finalstring.length == Object.keys(cityspots).length) {
+
+			if (watercheck == ";") {
+				isWater();
+			}
+			else if (watercheck == ":") {
+				isLand();
+			}
+			else {
+				errorMessage("Invalid ShareString");
+			}
+
+			var i = 0;
+			for (var divID in cityspots) { 
+				var building = finalstring[i];
+				i++;
+
+				if (building == "-") {} 
+				else if (building == "#") {}
+				else if (building == "_") {}
+				else if (building == "T") {} //townhall + waterspots
+				else {					     // normal buildings
+					var buildkey = building.toLowerCase();
+					if (louhotkeys.hasOwnProperty(buildkey)) {
+						var matchingbuilding = louhotkeys[buildkey];
+						$('#' + divID)
+						.removeClass()
+						.removeAttr('data-building')
+						.addClass(matchingbuilding)
+						.addClass('buildingmap')
+						.attr('data-building', matchingbuilding);
+						cityspots[divID]['buil'] = matchingbuilding;
+					}
 				}
 			}
+		} else {
+			errorMessage("Invalid ShareString");
 		}
-	} else {
+		runCity();
+		runOptimizer();
+		$('#importexportwindow').hide();
+	}
+	else if (stringcheck == '[ShareString.2.0]') { // My sharestrings, which I shelved the idea for. sadface. see the commented out function at bottom of this script.
+		var removest = string.replace('[ShareString.2.0]','').replace('[/ShareString]','');
+		var watercheck = removest.substring(0, 1);
+		var finalstring = removest.substring(1, 465); // remove water indicator
+		finalstring = finalstring.replace(' ','');  // removing spaces
+		finalstring = finalstring.replace(/(\r\n|\n|\r)/gm, ""); // removing linebreaks
+
+		if (finalstring.length == Object.keys(cityspots).length) {
+
+			if (watercheck == ";") {
+				isWater();
+			}
+			else if (watercheck == ":") {
+				isLand();
+			}
+			else {
+				errorMessage("Invalid ShareString");
+			}
+
+			var i = 0;
+			for (var divID in cityspots) { 
+				var building = finalstring[i];
+				i++;
+
+				if (building == "-") {} 
+				else if (building == "#") {}
+				else if (building == "_") {}
+				else if (building == "D") {} //basilica
+				else {					     // normal buildings
+					var buildkey = building.toLowerCase();
+					if (hotkeys.hasOwnProperty(buildkey)) {
+						var matchingbuilding = hotkeys[buildkey];
+						$('#' + divID)
+						.removeClass()
+						.removeAttr('data-building')
+						.addClass(matchingbuilding)
+						.addClass('buildingmap')
+						.attr('data-building', matchingbuilding);
+						cityspots[divID]['buil'] = matchingbuilding;
+					}
+				}
+			}
+		} else {
+			errorMessage("Invalid ShareString");
+		}
+		runCity();
+		runOptimizer();
+		$('#importexportwindow').hide();
+	} 
+	else {
 		errorMessage("Invalid ShareString");
 	}
-	runCity();
-	runOptimizer();
 }
 
 // adding text to error window popup
@@ -466,6 +638,64 @@ function isWater () {
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
+
+
+
+
+// At one point I had a great plan to make this optimizer give the CotG hotkey values as the sharestring, rather than hexist's LoU ones...
+// But that would involve the native game changing some stuff. And is just generally not feasable. *sigh* My pipedream...
+
+// function createCotGMapString () {
+// 		$('#inpexplonglink').val('');
+// 		$('#inpexpshortlink').val('');
+// 		$('#sharestringinput').val('');
+
+// 		var longmaplink = "http://cotgoptimizer.com/?cmap=";
+// 		var sharestringtext = "[ShareString.2.0]";
+
+// 		if ($('#cityholder').hasClass('waterside')) {
+// 			longmaplink += 'W';
+// 			sharestringtext += ";";
+// 		} else {
+// 			longmaplink += 'L';
+// 			sharestringtext += ":";
+// 		}
+
+// 		for (var divID in cityspots) {
+
+// 			if  ( cityspots[divID]['buil'].length > 0) { // regular buildings
+// 				var building = cityspots[divID]['buil'];
+// 				var finalkey = buildingsobject[building]['key'].toUpperCase();
+// 				longmaplink += finalkey;
+// 				sharestringtext += finalkey;
+// 			}
+// 			else if (divID == "b11-11") { // basilica
+// 				longmaplink += "D";
+// 				sharestringtext += "D";
+// 			}
+// 			else if ( cityspots[divID]['ws'] && $('#cityholder').hasClass('waterside')) { // open special spots (waterside)
+// 				sharestringtext += "_";
+// 			}
+// 			else if ( cityspots[divID]['wa'] && $('#cityholder').hasClass('waterside')) { // open spots (waterside)
+// 				longmaplink += "0";
+// 				sharestringtext += "-";
+// 			}
+// 			else if ( cityspots[divID]['la'] && $('#cityholder').hasClass('landlocked')) { // open spots (landlocked)
+// 				longmaplink += "0";
+// 				sharestringtext += "-";
+// 			}
+// 			else if ( cityspots[divID]['buil'].length == 0) {
+// 				longmaplink += "0";
+// 				sharestringtext += "#";
+// 			}
+// 			else {}
+// 		}
+
+// 		sharestringtext += "[/ShareString]";
+
+// 		$('#inpexplonglink').val(longmaplink);
+// 		$('#sharestringinput').val(sharestringtext);
+// }
 
 
 

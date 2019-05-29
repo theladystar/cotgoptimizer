@@ -47,21 +47,14 @@
 				<br style="clear:both">
 			</div>
 
-			<p class = "impexp1p">If you're importing sharestrings that were made in cotgopt / louopt, you'll need to click the LoU Sharestring tab below, and import them to there.</p>
-			<p class = "impexp2p">(Because cotgopt / louopt used the LoU hotkeys in the sharestrings and urls, and I don't :D )</p>
-
-			<div class = "flex">
-				<button ID = "cotgsharestringb" class ="bluebuttons">CotG ShareString</button>
-				<button ID = "lousharestringb" class ="bluebuttons">LoU ShareString</button>
-			</div>
+			<p class = "impexp1p">These value are for your current city plan.</p>
+			<p class = "impexp2p">To load a different city plan, paste in a sharestring, and click 'Load'.</p>
 
 			<div class = "textareacontain">
-				<textarea ID = "sharestringinputcotg" onfocus="this.select();"></textarea>
-				<textarea ID = "sharestringinputlou" onfocus="this.select();" placeholder="Enter cotgopt / louopt Sharestring here"></textarea>
+				<textarea ID = "sharestringinput" onfocus="this.select();"></textarea>
 			</div>
 			<div class = "loadbuttoncontain">
-				<button ID = "loadcotgstringbutton" class = "bluebuttons">Load</button>
-				<button ID = "loadloustringbutton" class = "bluebuttons">Load</button>
+				<button ID = "loadstringbutton" class = "bluebuttons">Load</button>
 			</div>
 
 			<p class = "impexp3p">Direct links to this map:</p>
@@ -848,10 +841,10 @@
 					<td ID = "woodstoragetd" class = "centrefl lgreytd"></td>
 					<td ID = "woodprotectedtd" class = "centrefl dgreytd"></td>
 					<td class = "btt">
-						<button ID = "woodminus" class = "mid bttbluebuttons">-</button>
+						<button ID = "woodminus" class = "mid bttbluebuttons" onclick="remoAWoodProd();">-</button>
 					</td>
 					<td class = "btt">
-						<button ID = "woodplus" class = "mid bttbluebuttons">+</button>
+						<button ID = "woodplus" class = "mid bttbluebuttons" onclick="addAWoodProd();">+</button>
 					</td>
 				</tr>
 				<tr>
@@ -860,10 +853,10 @@
 					<td ID = "stonestoragetd" class = "centrefl lgreytd"></td>
 					<td ID = "stoneprotectedtd" class = "centrefl dgreytd"></td>
 					<td class = "btt">
-						<button ID = "stoneminus" class = "mid bttbluebuttons">-</button>
+						<button ID = "stoneminus" class = "mid bttbluebuttons" onclick="remoAStoneProd();">-</button>
 					</td>
 					<td class = "btt">
-						<button ID = "stoneplus" class = "mid bttbluebuttons">+</button>
+						<button ID = "stoneplus" class = "mid bttbluebuttons" onclick="addAStoneProd();">+</button>
 					</td>
 				</tr>
 				<tr>
@@ -872,10 +865,10 @@
 					<td ID = "ironstoragetd" class = "centrefl lgreytd"></td>
 					<td ID = "ironprotectedtd" class = "centrefl dgreytd"></td>
 					<td class = "btt">
-						<button ID = "ironminus" class = "mid bttbluebuttons">-</button>
+						<button ID = "ironminus" class = "mid bttbluebuttons" onclick="remoAIronProd();">-</button>
 					</td>
 					<td class = "btt">
-						<button ID = "ironplus" class = "mid bttbluebuttons">+</button>
+						<button ID = "ironplus" class = "mid bttbluebuttons" onclick="addAIronProd();">+</button>
 					</td>
 				</tr>
 				<tr>
@@ -884,10 +877,10 @@
 					<td ID = "foodstoragetd" class = "centrefl lgreytd"></td>
 					<td ID = "foodprotectedtd" class = "centrefl dgreytd"></td>
 					<td class = "btt">
-						<button ID = "foodminus" class = "mid bttbluebuttons">-</button>
+						<button ID = "foodminus" class = "mid bttbluebuttons" onclick="remoAFoodProd();">-</button>
 					</td>
 					<td class = "btt">
-						<button ID = "foodplus" class = "mid bttbluebuttons">+</button>
+						<button ID = "foodplus" class = "mid bttbluebuttons" onclick="addAFoodProd();">+</button>
 					</td>
 				</tr>
 				<tr>
@@ -896,10 +889,10 @@
 					<td class = "centrefl lgreytd">-</td>
 					<td class = "centrefl dgreytd">-</td>
 					<td class = "btt">
-						<button ID = "goldminus" class = "mid bttbluebuttons">-</button>
+						<button ID = "goldminus" class = "mid bttbluebuttons" onclick="remoAGoldProd();">-</button>
 					</td>
 					<td class = "btt">
-						<button ID = "goldplus" class = "mid bttbluebuttons">+</button>
+						<button ID = "goldplus" class = "mid bttbluebuttons" onclick="addAGoldProd();">+</button>
 					</td>
 				</tr>
 				<tr>
@@ -950,7 +943,7 @@
 						<button ID = "lockbuildings" class = "midbutton mid bttbluebuttons" onclick="lockAllBuildings();">Lock All Buildings</button>
 					</td>
 					<td class = "mtt">
-						<button ID = "undoaction" class = "midbutton mid bttbluebuttons">Undo</button>
+						<button ID = "undoaction" class = "midbutton mid bttbluebuttons" onclick="undoAction();">Undo</button>
 					</td>
 					<td class = "endrow">
 						<span>Construction Speed: </span><span ID = "constrspeedp">100%</span>
@@ -961,7 +954,7 @@
 						<button ID = "lockresources" class = "midbutton mid bttbluebuttons" onclick="lockAllResources();">Lock All Resources</button>
 					</td>
 					<td class = "mtt">
-						<button ID = "redoaction" class = "midbutton mid bttbluebuttons">Redo</button>
+						<button ID = "redoaction" class = "midbutton mid bttbluebuttons" onclick="redoAction();">Redo</button>
 					</td>
 					<td class = "endrow">
 						<span class = "cartspic"></span> <span ID = "numbercarts">-</span>
@@ -972,7 +965,7 @@
 						<button ID = "unlockall" class = "smallerbutton mid bttbluebuttons" onclick="unlockAll();">Unlock All</button>
 					</td>
 					<td class = "mtt">
-						<button ID = "resetmap" class = "smallerbutton mid bttbluebuttons">Reset Map</button>
+						<button ID = "resetmap" class = "smallerbutton mid bttbluebuttons" onclick="resetMap();">Reset Map</button>
 					</td>
 					<td class = "endrow">
 						<span class = "shipspic"></span> <span ID = "numbertradeships">-</span>

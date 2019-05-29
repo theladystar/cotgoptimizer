@@ -112,15 +112,14 @@ button:focus {
 .impexp1p {
 	font-size: 12px;
 	width: 80%;
-	margin: 10px auto;
+	margin: 18px auto 10px auto;
 	text-align: center;
 }
 
 .impexp2p {
-	font-size: 11px;
-	font-style: italic;
+	font-size: 12px;
 	width: 80%;
-	margin: 10px auto 0 auto;
+	margin: 10px auto 10px auto;
 	text-align: center;
 }
 
@@ -156,7 +155,7 @@ button:focus {
 
 #actualimpexpwindow textarea {
 	resize: none;
-	height: 195px;
+	height: 240px;
     width: 250px;
 	text-align: left;
 	font-size: 12px;
